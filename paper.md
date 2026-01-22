@@ -66,7 +66,7 @@ We retrieve data from two World Bank databases: the World Development Indicators
 
 ## 2.2 Sample Selection
 
-Our sample comprises a focused group of 40 major economies (20 OECD, 20 non-OECD) observed from 2000 to 2023. We employ MICE (Multiple Imputation by Chained Equations) to impute missing values in the dataset, constructing a balanced panel to maximize information retention. This process yields:
+Our sample comprises a focused group of 40 major economies (20 OECD, 20 non-OECD) observed from 2000 to 2023. We employ fold-safe MICE (Multiple Imputation by Chained Equations) for controls and moderators only, fitted within training folds to avoid leakage; outcome and treatment are never imputed. This process yields:
 - A balanced panel of 40 countries over 24 years.
 - Total observations N = 960 (40 × 24).
 
@@ -79,7 +79,7 @@ We intentionally focus on 40 major economies to ensure **high measurement reliab
 | :--- | :--- | :--- |
 | **Core Variables** | | |
 | CO₂ Emissions | Per capita (metric tons) | WDI |
-| **Domestic Digital Capacity (DCI)** | PCA Index (Internet, Broadband*, Servers*) | WDI/Simulated |
+| **Domestic Digital Capacity (DCI)** | PCA Index (Internet, Fixed Broadband, Secure Servers) | WDI (fold-safe MICE) |
 | **External Digital Specialization (EDS)** | ICT Service Exports (% of service exports) | WDI |
 | **Institutional Quality (WGI)** | | |
 | Control of Corruption | Perceptions of public power for private gain | WGI |
@@ -104,7 +104,7 @@ We intentionally focus on 40 major economies to ensure **high measurement reliab
 | GDP per capita (US$) | 26,112 | 22,695 | 621 | 97,794 |
 | Renewable Energy (%) | 21.98 | 18.35 | 0.00 | 88.10 |
 
-*Note: DCI is a composite index (mean=0, sd=1) constructed via PCA from Internet Users, Fixed Broadband, and Secure Servers (Source: WDI (MICE-imputed), author’s computation). EDS represents the country's export specialization in ICT services.*
+*Note: DCI is a composite index (mean=0, sd=1) constructed via PCA from Internet Users, Fixed Broadband Subscriptions, and Secure Servers (Source: WDI with fold-safe MICE, author’s computation). EDS represents the country's export specialization in ICT services.*
 
 ---
 
@@ -122,7 +122,7 @@ where τ(x) is the Conditional Average Treatment Effect (CATE) for observation w
 
 We implement CausalForestDML (Athey & Wager, 2019) with a strict separation of variables to avoid overfitting:
 
-1.  **Moderators (X)**: A parsimonious set of five theoretical drivers of heterogeneity: **GDP per capita, Control of Corruption, Energy Use, Renewable Energy share, Urban Population**. *(Internet Users is used exclusively as a component of DCI and is therefore excluded from X and W to avoid “bad control” concerns.)*
+1.  **Moderators (X)**: A parsimonious set of six theoretical drivers of heterogeneity: **GDP per capita, EDS, Control of Corruption, Energy Use, Renewable Energy share, Urban Population**. *(Internet Users, Fixed Broadband, and Secure Servers are used exclusively as DCI components and are therefore excluded from X and W to avoid “bad control” concerns.)*
 2.  **Controls (W)**: A high-dimensional vector (50+ variables) to capture confounding.
 
 Configuration for Rigor:

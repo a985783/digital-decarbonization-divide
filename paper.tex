@@ -128,7 +128,7 @@ We retrieve data from two World Bank databases: the World Development Indicators
 
 \subsection{Sample Selection}
 
-Our sample comprises a focused group of 40 major economies (20 OECD, 20 non-OECD) observed from 2000 to 2023. We employ MICE (Multiple Imputation by Chained Equations) to impute missing values in the dataset, constructing a balanced panel to maximize information retention. This process yields:
+Our sample comprises a focused group of 40 major economies (20 OECD, 20 non-OECD) observed from 2000 to 2023. We employ fold-safe MICE (Multiple Imputation by Chained Equations) for controls and moderators only, fitted within training folds to avoid leakage; outcome and treatment are never imputed. This process yields:
 \begin{itemize}
     \item A balanced panel of 40 countries over 24 years.
     \item Total observations $N = 960$ ($40 \times 24$).
@@ -148,8 +148,8 @@ Variable & Definition & Source \\
 \midrule
 \multicolumn{3}{l}{\textbf{Core Variables}} \\
 CO$_2$ Emissions & Per capita (metric tons) & WDI \\
-\textbf{Domestic Digital Capacity (DCI)} & PCA Index (Internet, Broadband, Servers) & WDI (MICE-imputed) \\
-\textbf{External Digital Specialization (EDS)} & \% of service exports (ICT) & WDI \\
+\textbf{Domestic Digital Capacity (DCI)} & PCA Index (Internet, Fixed Broadband, Secure Servers) & WDI (fold-safe MICE) \\
+\textbf{External Digital Specialization (EDS)} & ICT service exports (\% of service exports) & WDI \\
 \multicolumn{3}{l}{\textbf{Institutional Quality (WGI)}} \\
 Control of Corruption & Perceptions of public power for private gain & WGI \\
 Rule of Law & Confidence in societal rules & WGI \\
@@ -175,7 +175,7 @@ Urban Population & \% of total population & WDI \\
 Variable & Mean & Std. Dev. & Min & Max \\
 \midrule
 CO$_2$ Emissions (metric tons/cap) & 4.17 & 4.33 & 0.04 & 21.87 \\
-ICT Service Exports (\%) & 9.27 & 9.75 & 0.42 & 57.23 \\
+EDS (ICT Service Exports, \%) & 9.27 & 9.75 & 0.42 & 57.23 \\
 Control of Corruption & 0.57 & 1.15 & $-1.60$ & 2.46 \\
 GDP per capita (US\$) & 26,112 & 22,695 & 621 & 97,794 \\
 Renewable Energy (\%) & 21.98 & 18.35 & 0.00 & 88.10 \\
@@ -183,7 +183,7 @@ Renewable Energy (\%) & 21.98 & 18.35 & 0.00 & 88.10 \\
 \end{tabular}
 \end{table}
 
-\noindent\textit{Note: DCI is a composite index (mean=0, sd=1) constructed via PCA from Internet Users, Fixed Broadband, and Secure Servers (Source: WDI (MICE-imputed), author’s computation). EDS represents the country's export specialization in ICT services.}
+\noindent\textit{Note: DCI is a composite index (mean=0, sd=1) constructed via PCA from Internet Users, Fixed Broadband Subscriptions, and Secure Servers (Source: WDI with fold-safe MICE, author’s computation). EDS represents the country's export specialization in ICT services.}
 
 %==============================================================================
 \section{Methodology}
@@ -204,7 +204,7 @@ where $\tau(x)$ is the Conditional Average Treatment Effect (CATE) for observati
 We implement CausalForestDML \citep{Athey2019} with a strict separation of variables to avoid overfitting:
 
 \begin{enumerate}
-    \item \textbf{Moderators (X):} A parsimonious set of five theoretical drivers of heterogeneity: \textbf{GDP per capita, Control of Corruption, Energy Use, Renewable Energy share, Urban Population}. \textit{(Internet Users is used exclusively as a component of DCI and is therefore excluded from X and W to avoid “bad control” concerns.)}
+    \item \textbf{Moderators (X):} A parsimonious set of six theoretical drivers of heterogeneity: \textbf{GDP per capita, EDS, Control of Corruption, Energy Use, Renewable Energy share, Urban Population}. \textit{(Internet Users, Fixed Broadband, and Secure Servers are used exclusively as DCI components and are therefore excluded from X and W to avoid “bad control” concerns.)}
     \item \textbf{Controls (W):} A high-dimensional vector (50+ variables) to capture confounding.
 \end{enumerate}
 

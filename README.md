@@ -1,7 +1,7 @@
 # The Digital Decarbonization Divide (Replication Package)
 
 This repository contains the data and code to reproduce the findings of the paper:
-**"The Digital Decarbonization Divide: Asymmetric Effects of ICT on CO₂ Emissions Across Socio-economic Capacity"**
+**"The Digital Decarbonization Divide: Asymmetric Effects of Digital Capacity on CO₂ Emissions Across Socio-economic Capacity"**
 
 ## 🔑 Key Findings
 
@@ -18,8 +18,8 @@ Using a **Causal Forest DML** framework on 960 observations across 40 economies:
 
 ### The Core Insight: A "Divide" Exists
 
-- **High-capacity economies**: ICT tends to reduce emissions
-- **Low-capacity economies**: ICT shows weaker or indefinite effects
+- **High-capacity economies**: DCI tends to reduce emissions
+- **Low-capacity economies**: DCI shows weaker or indefinite effects
 - **The divide is real**: Validated by highly significant interaction tests
 
 ## 📊 Main Visualizations
@@ -35,7 +35,8 @@ Using a **Causal Forest DML** framework on 960 observations across 40 economies:
 ```
 ├── data/
 │   ├── wdi_expanded_raw.csv           # Augmented WDI/WGI data (60 vars + country/year)
-│   ├── clean_data_v3_imputed.csv      # MICE-imputed dataset (N=960)
+│   ├── clean_data_v4_imputed.csv      # Fold-safe MICE-imputed dataset (N=960)
+│   ├── clean_data_v3_imputed.csv      # Legacy imputed dataset
 ├── scripts/
 │   ├── solve_wdi_v4_expanded_zip.py   # Data Download (WDI/WGI)
 │   ├── impute_mice.py                 # MICE Imputation
@@ -45,6 +46,7 @@ Using a **Causal Forest DML** framework on 960 observations across 40 economies:
 │   ├── phase2_causal_forest.py        # ⭐ Causal Forest DML (main)
 │   ├── phase3_visualizations.py       # ⭐ Publication-quality figures
 │   └── xgboost_shap_v3.py             # SHAP Analysis
+├── analysis_spec.yaml                 # Single source of truth
 ├── results/
 │   ├── causal_forest_cate.csv         # ⭐ Main results (CATE per obs)
 │   ├── phase1_mvp_results.csv         # Interaction term results
@@ -55,8 +57,8 @@ Using a **Causal Forest DML** framework on 960 observations across 40 economies:
 │       ├── cate_distribution.png       # CATE histogram
 │       ├── country_average_cate.png    # Country comparison
 │       └── moderator_effects_panel.png # ⭐ Multi-panel moderators
-├── paper.md                           # Paper (Markdown)
-├── paper.tex                          # Paper (LaTeX)
+├── paper.md                           # Paper (Markdown, legacy)
+├── paper.tex                          # Paper (LaTeX, source of truth)
 ├── DATA_MANIFEST.md                   # Variable definitions (62 vars)
 └── requirements.txt                   # Dependencies
 ```
@@ -76,7 +78,7 @@ pip install -r requirements.txt
 **Phase 1: Data Engineering**
 ```bash
 python scripts/solve_wdi_v4_expanded_zip.py  # Download 60 vars
-python scripts/impute_mice.py                # MICE Imputation
+python scripts/impute_mice.py                # Fold-safe MICE Imputation
 ```
 
 **Phase 2: Heterogeneity Verification**
@@ -104,7 +106,7 @@ python scripts/phase3_visualizations.py      # ⭐ Generate figures
 | **Variables** | 60 variables (excluding country/year; includes OECD flag) |
 | **Domains** | Institutions (6 WGI), Energy, Finance, Demographics |
 
-*Note: `CO2_per_capita` is scaled by /100 in the analysis scripts; descriptive statistics in the paper use this scale.*
+*Note: `CO2_per_capita` is scaled by /100 when raw values exceed 100.*
 
 ## ⚠️ Methodology Notes
 
@@ -122,6 +124,10 @@ CausalForestDML(
 ### Inference
 - 95% confidence intervals via `effect_interval()`
 - Significance: CI does not cross zero
+
+### Treatment Definitions
+- **DCI**: PCA of Internet Users, Fixed Broadband Subscriptions, and Secure Servers (WDI).
+- **EDS**: ICT service exports (% of service exports).
 
 ## 📄 Citation
 
