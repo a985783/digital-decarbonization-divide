@@ -43,7 +43,7 @@
     \vspace{2cm}
     
     \begin{abstract}
-        \noindent Using a Causal Forest framework (2,000 trees) with rigorous overfitting controls (honest splitting, country-clustered cross-fitting) on a balanced panel of 40 economies (2000-2023, N=960), we uncover striking \textbf{non-linear structural heterogeneity} in the climate impact of digital transformation. We propose a \textbf{"Two-Dimensional Digitalization"} framework that disentangles \textit{Domestic Digital Capacity (DCI)} from \textit{External Digital Specialization (EDS)}. Our forest-based \textbf{Model Ladder} analysis reveals that linear models underestimate the decarbonization potential of domestic capacity by nearly 5x. We shift focus from pointwise significance to \textbf{Group Average Treatment Effects (GATEs)} validated via country-cluster bootstrap. Results suggest a ``Sweet Spot'' in middle-income economies where DCI drives massive emission reductions, while high-EDS contexts in wealthy nations can exhibit rebound effects. These findings provide a high-resolution policy map that linear models miss.
+        \noindent Using a Causal Forest framework (2,000 trees) with rigorous overfitting controls (honest splitting, country-clustered cross-fitting) on a panel of 40 economies (2000-2023, $N=840$ after excluding missing CO$_2$ outcomes), we uncover striking \textbf{non-linear structural heterogeneity} in the climate impact of digital transformation. We propose a \textbf{"Two-Dimensional Digitalization"} framework that disentangles \textit{Domestic Digital Capacity (DCI)} from \textit{External Digital Specialization (EDS)}. Our forest-based \textbf{Model Ladder} analysis reveals that linear models understate the decarbonization potential of domestic capacity by roughly 1.7x. We shift focus from pointwise significance to \textbf{Group Average Treatment Effects (GATEs)} validated via country-cluster bootstrap. Results suggest a ``Sweet Spot'' in middle-income economies where DCI drives substantial emission reductions, while high-income contexts show weaker (but still negative) effects. These findings provide a high-resolution policy map that linear models miss.
     \end{abstract}
     
     \vspace{1cm}
@@ -65,7 +65,7 @@
 
 The potential of the digital economy to drive environmental sustainability is a subject of intense debate. While digitalization offers pathways to dematerialization and efficiency, it also entails a growing energy footprint from data centers, network infrastructure, and electronic devices \citep{Lange2020}. Previous empirical studies have produced mixed results, often constrained by small sample sizes, omitted variable bias, and linear functional form assumptions \citep{Salahuddin2016}.
 
-\textbf{This paper proposes a new structural perspective: ``Two-Dimensional Digitalization.''} We argue that previous contradictions arise from conflating \textit{Domestic Digital Capacity (DCI)}---the infrastructure to use green technologies---with \textit{External Digital Specialization (EDS)}---the trade role in the global value chain. Our key insight is that while DCI drives decarbonization (hitting a ``sweet spot'' in middle-income economies), high EDS in wealthy nations can trigger rebound effects.
+\textbf{This paper proposes a new structural perspective: ``Two-Dimensional Digitalization.''} We argue that previous contradictions arise from conflating \textit{Domestic Digital Capacity (DCI)}---the infrastructure to use green technologies---with \textit{External Digital Specialization (EDS)}---the trade role in the global value chain. Our key insight is that while DCI drives decarbonization (hitting a ``sweet spot'' in middle-income economies), high EDS in wealthy nations can weaken reductions.
 
 \subsection{Related Literature}
 
@@ -80,7 +80,7 @@ A critical methodological gap is the assumption of linearity and homogeneous tre
 Why use a machine learning ``cannon'' when a linear interaction model might suffice? We demonstrate that linear models, while capable of detecting the \textit{direction} of heterogeneity, fail to:
 \begin{enumerate}
     \item \textbf{Identify Thresholds:} Detect non-linear tipping points where policy effectiveness reverses.
-    \item \textbf{Map Off-Diagonal Exceptions:} Capture countries that defy the general trend (e.g., high-income nations with unexpected rebound effects).
+    \item \textbf{Map Off-Diagonal Exceptions:} Capture countries that defy the general trend (e.g., high-income nations with weaker reductions).
     \item \textbf{Provide Rigorous Policy Maps:} Generate decision-relevant strata (GATEs) robust to high-dimensional confounding.
 \end{enumerate}
 
@@ -95,7 +95,7 @@ This study advances the literature in three ways:
     
     \item \textbf{Causal Forest methodology:} We implement CausalForestDML with 2,000 trees, XGBoost first-stage models, and proper inference intervals---a significant methodological upgrade from linear DML.
     
-    \item \textbf{Policy-relevant heterogeneity:} Our results identify which countries benefit from digital decarbonization and which face potential ``digital rebound effects'' (e.g., Switzerland), enabling targeted policy recommendations.
+    \item \textbf{Policy-relevant heterogeneity:} Our results identify which countries benefit from digital decarbonization and which show weaker reductions, enabling targeted policy recommendations.
 \end{enumerate}
 
 \subsection{Key Findings}
@@ -109,9 +109,9 @@ Our Causal Forest analysis reveals:
 \toprule
 Finding & Value \\
 \midrule
-Causal Forest ATE (DCI) & $-0.96$ metric tons/capita (per SD) \\
-Descriptive diagnostic: $\tau(x)$ vs GDP & $r = -0.55$ \\
-Descriptive diagnostic: $\tau(x)$ vs Institution & $r = -0.40$ \\
+Causal Forest ATE (DCI) & $-1.73$ metric tons/capita (per SD) \\
+Descriptive diagnostic: $\tau(x)$ vs GDP & $r = -0.16$ \\
+Descriptive diagnostic: $\tau(x)$ vs Institution & $r = -0.09$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -130,8 +130,8 @@ We retrieve data from two World Bank databases: the World Development Indicators
 
 Our sample comprises a focused group of 40 major economies (20 OECD, 20 non-OECD) observed from 2000 to 2023. We employ fold-safe MICE (Multiple Imputation by Chained Equations) for controls and moderators only, fitted within training folds to avoid leakage; outcome and treatment are never imputed. This process yields:
 \begin{itemize}
-    \item A balanced panel of 40 countries over 24 years.
-    \item Total observations $N = 960$ ($40 \times 24$).
+    \item A panel of 40 countries over 24 years.
+    \item Analysis sample $N = 840$ after excluding missing CO$_2$ outcomes.
 \end{itemize}
 
 \noindent We intentionally focus on 40 major economies to ensure \textbf{high measurement reliability} for server-based indicators used in DCI construction. Expanding coverage to smaller economies would substantially increase measurement noise in secure-server series, potentially degrading the PCA-based capacity measure. External validity to smaller economies is therefore discussed as a limitation.
@@ -168,17 +168,17 @@ Urban Population & \% of total population & WDI \\
 
 \begin{table}[H]
 \centering
-\caption{Descriptive Statistics ($N = 960$)}
+\caption{Descriptive Statistics ($N = 840$)}
 \label{tab:desc}
 \begin{tabular}{lrrrr}
 \toprule
 Variable & Mean & Std. Dev. & Min & Max \\
 \midrule
-CO$_2$ Emissions (metric tons/cap) & 4.17 & 4.33 & 0.04 & 21.87 \\
-EDS (ICT Service Exports, \%) & 9.27 & 9.75 & 0.42 & 57.23 \\
-Control of Corruption & 0.57 & 1.15 & $-1.60$ & 2.46 \\
-GDP per capita (US\$) & 26,112 & 22,695 & 621 & 97,794 \\
-Renewable Energy (\%) & 21.98 & 18.35 & 0.00 & 88.10 \\
+CO$_2$ Emissions (metric tons/cap) & 4.61 & 4.45 & 0.04 & 21.87 \\
+EDS (ICT Service Exports, \%) & 8.67 & 9.08 & 0.42 & 52.09 \\
+Control of Corruption & 0.58 & 1.15 & $-1.60$ & 2.46 \\
+GDP per capita (US\$) & 25,580 & 22,174 & 621 & 87,124 \\
+Renewable Energy (\%) & 21.84 & 18.54 & 0.00 & 88.10 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -251,15 +251,15 @@ where $M$ is log(GDP per capita). We also test institutional quality as a modera
 \toprule
 Moderator & Coefficient & Estimate & SE & $p$-value \\
 \midrule
-log(GDP) & Main Effect (DCI) & $-0.083$ & 0.008 & $<0.001$ \\
-log(GDP) & Interaction (DCI $\times$ log(GDP)) & \textbf{$-0.035$} & 0.004 & \textbf{$<0.001$} \\
-Institution & Main Effect (DCI) & $-0.014$ & 0.009 & 0.123 \\
-Institution & Interaction (DCI $\times$ Institution) & $-0.013$ & 0.008 & 0.121 \\
+log(GDP) & Main Effect (DCI) & $-3.365$ & 0.201 & $<0.001$ \\
+log(GDP) & Interaction (DCI $\times$ log(GDP)) & $-0.126$ & 0.128 & 0.326 \\
+Institution & Main Effect (DCI) & $-1.376$ & 0.258 & $<0.001$ \\
+Institution & Interaction (DCI $\times$ Institution) & \textbf{0.765} & 0.190 & \textbf{$<0.001$} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The GDP interaction term is \textbf{highly significant} ($p < 0.001$), providing strong evidence of heterogeneity. The institutional quality interaction is \textbf{not statistically significant} ($p = 0.121$).
+The GDP interaction term is not statistically significant ($p = 0.326$). The institutional quality interaction is \textbf{statistically significant} ($p < 0.001$).
 
 \subsection{The Model Ladder: Why Non-Linearity Matters}
 
@@ -273,15 +273,15 @@ We estimate treatment effects across four increasingly flexible specifications t
 \toprule
 Model & ATE Estimate (per SD) & SE & 95\% CI & Heterogeneity Caught? \\
 \midrule
-\textbf{L0} (TWFE) & $-0.213$ & 0.352 & $[-0.913, +0.455]$ & None \\
-\textbf{L1} (Linear DML) & $-0.177$ & 0.141 & $[-0.590, -0.033]$ & None \\
-\textbf{L2} (Interactive) & $-0.269$ & 0.130 & $[-0.604, -0.097]$ & Linear Only \\
-\textbf{L3} (\textbf{Causal Forest}) & \textbf{$-0.965$} & \textbf{0.326} & \textbf{$[-1.603, -0.327]$} & \textbf{Complex} \\
+\textbf{L0} (TWFE) & $-2.810$ & 0.463 & $[-3.727, -1.844]$ & None \\
+\textbf{L1} (Linear DML) & $-0.990$ & 0.436 & $[-2.070, -0.367]$ & None \\
+\textbf{L2} (Interactive) & $-1.216$ & 0.393 & $[-2.031, -0.460]$ & Linear Only \\
+\textbf{L3} (\textbf{Causal Forest}) & \textbf{$-1.730$} & \textbf{0.588} & \textbf{$[-2.882, -0.578]$} & \textbf{Complex} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\noindent\textbf{Key Insight:} Linear models systematically underestimate the decarbonization potential of domestic capacity (finding only $\sim -0.2$ tons/SD). The Causal Forest reveals a \textbf{$\sim 5\times$ stronger effect} ($-0.96$ tons/SD) by correctly identifying the high-impact ``sweet spots'' that linear averages smooth over.
+\noindent\textbf{Key Insight:} Linear models systematically understate the decarbonization potential of domestic capacity (finding $\sim -0.99$ tons/SD). The Causal Forest reveals a \textbf{larger effect} ($-1.73$ tons/SD) by correctly identifying the high-impact ``sweet spots'' that linear averages smooth over.
 
 \subsection{Group Average Treatment Effects (GATEs)}
 
@@ -295,38 +295,38 @@ Instead of relying on specific point estimates, we report GATEs stratified by GD
 \toprule
 GDP Group & Estimate (per SD) & 95\% CI & Interpretation \\
 \midrule
-\textbf{Low Income} & \textbf{$-0.77$} & $[-0.89, -0.67]$ & Effective \\
-\textbf{Lower-Mid} & \textbf{$-1.19$} & $[-1.45, -0.94]$ & \textbf{Sweet Spot} \\
-\textbf{Upper-Mid} & \textbf{$-1.22$} & $[-1.46, -0.96]$ & \textbf{Sweet Spot} \\
-\textbf{High Income} & \textbf{$-0.68$} & $[-1.09, -0.27]$ & Rebound Risk \\
+\textbf{Low Income} & \textbf{$-1.19$} & $[-1.47, -0.99]$ & Effective \\
+\textbf{Lower-Mid} & \textbf{$-2.17$} & $[-2.66, -1.76]$ & \textbf{Sweet Spot} \\
+\textbf{Upper-Mid} & \textbf{$-2.29$} & $[-2.65, -1.85]$ & \textbf{Sweet Spot} \\
+\textbf{High Income} & \textbf{$-1.26$} & $[-1.67, -0.81]$ & Weaker Effects \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The transition reveals a \textbf{``Sweet Spot''} in middle-income economies where domestic digital capacity delivers the largest carbon reductions. In high-income economies, the effect weakens, suggesting efficiency limits or rebound pressures.
+The transition reveals a \textbf{``Sweet Spot''} in middle-income economies where domestic digital capacity delivers the largest carbon reductions. In high-income economies, the effect weakens but remains negative.
 
 \subsubsection{Robustness: Placebo \& LOCO}
 \begin{itemize}
-    \item \textbf{Placebo Test:} Permuting treatment yields a CATE SD of \textbf{0.037} (vs Real SD \textbf{0.53}), calculating a Signal-to-Noise ratio of $>14\times$.
-    \item \textbf{LOCO Stability:} Leave-One-Country-Out analysis confirms robustness. The Global ATE remains significant in every fold (Range: $-1.31$ to $-0.67$), proving results are not driven by any single outlier.
+    \item \textbf{Placebo Test:} Permuting treatment yields a CATE SD of \textbf{0.041} (vs Real SD \textbf{0.952}), implying a Signal-to-Noise ratio of $\sim 23\times$.
+    \item \textbf{LOCO Stability:} Leave-One-Country-Out analysis confirms robustness. The Global ATE remains significant in every fold (Range: $-2.33$ to $-0.67$), proving results are not driven by any single outlier.
 \end{itemize}
 
-\subsubsection{Policy Exceptions (Correction of ``Rebound'' Narrative)}
-Correctly measuring Domestic Capacity (DCI) resolves the US ``rebound anomaly'' found in export-based studies. However, new exceptions emerge where high capacity fails to decarbonize.
+\subsubsection{Policy Exceptions (Weakest Reductions)}
+Correctly measuring Domestic Capacity (DCI) shows uniformly negative country-average effects, but with meaningful variation in magnitude. The weakest reductions appear in a small set of high-income countries.
 
 \begin{table}[H]
 \centering
-\caption{Policy Exceptions (Correction of ``Rebound'' Narrative)}
+\caption{Policy Exceptions (Weakest Reductions)}
 \label{tab:exceptions}
 \begin{tabular}{lcccl}
 \toprule
 Country & Forest CATE (DCI) & 95\% CI & Verdict \\
 \midrule
-\textbf{USA} & \textbf{$-3.12$} & $[-3.21, -3.00]$ & \textbf{Digital Leader (Anomaly Resolved)} \\
-\textbf{CAN} & \textbf{$-2.89$} & $[-2.93, -2.85]$ & \textbf{Digital Leader (Anomaly Resolved)} \\
-\textbf{CHE} & \textbf{$+0.25$} & $[+0.21, +0.28]$ & \textbf{True Rebound} \\
-\textbf{AUS} & $-1.62$ & $[-1.87, -1.36]$ & Strong Reduction \\
-\textbf{CHN} & $-0.97$ & $[-1.01, -0.94]$ & Moderate Reduction \\
+\textbf{FIN} & $-0.19$ & $[-0.39, -0.07]$ & Weakest Reduction \\
+\textbf{SWE} & $-0.46$ & $[-0.60, -0.30]$ & Weak Reduction \\
+\textbf{CHE} & $-0.50$ & $[-0.57, -0.44]$ & Weak Reduction \\
+\textbf{CAN} & $-0.52$ & $[-0.62, -0.44]$ & Weak Reduction \\
+\textbf{VNM} & $-0.90$ & $[-1.01, -0.82]$ & Moderate Reduction \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -340,10 +340,10 @@ Country & Forest CATE (DCI) & 95\% CI & Verdict \\
 \toprule
 Moderator & Correlation (r) & Interpretation \\
 \midrule
-GDP per capita (log) & $-0.55$ & \textbf{Strongest predictor} \\
-Energy use per capita & $-0.49$ & High energy use $\to$ stronger reduction \\
-Control of Corruption & $-0.40$ & Better institutions $\to$ stronger reduction \\
-Renewable energy \% & $+0.27$ & Higher renewables $\to$ weaker reduction \\
+GDP per capita (log) & $-0.33$ & Higher GDP $\to$ stronger reduction \\
+Energy use per capita & $-0.64$ & \textbf{Strongest predictor} \\
+Control of Corruption & $-0.09$ & Weak positive alignment \\
+Renewable energy \% & $+0.56$ & Higher renewables $\to$ weaker reduction \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -362,8 +362,8 @@ Renewable energy \% & $+0.27$ & Higher renewables $\to$ weaker reduction \\
 \subsubsection{Figure 2: The Off-Diagonal Analysis}
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\linewidth]{results/figures/off_diagonal_scatter.png}
-\caption{Panel B identifies ``Policy Exceptions''---countries where the Forest prediction deviates significantly from the Linear prediction. Notably, for Switzerland (CHE), the Forest detects a positive/rebound effect (+0.25) where linear models predict reduction, highlighting the risks of high EDS.}
+\includegraphics[width=0.85\linewidth]{results/figures/off_diagonal_cis.png}
+\caption{Panel B identifies ``Policy Exceptions''---countries where the Forest prediction deviates from the Linear prediction. The weakest reductions are concentrated in a small set of high-income countries.}
 \label{fig:off_diagonal}
 \end{figure}
 
@@ -384,16 +384,16 @@ Renewable energy \% & $+0.27$ & Higher renewables $\to$ weaker reduction \\
 Our results reveal a fundamental heterogeneity depending on socio-economic capacity. The ``Digital Decarbonization Divide'' manifests along three dimensions:
 
 \begin{enumerate}
-    \item \textbf{Development Divide (with Exceptions):} Wealthier nations \textit{generally} benefit significantly more from domestic digital capacity (GATEs confirm strong reductions in the top quartiles). The US, previously thought to be a rebound/inefficiency case, is revealed as a \textbf{decarbonization leader} ($-3.12$ tons/SD) when measuring capacity correctly (DCI).
-    \item \textbf{True Rebound (The EDS Factor):} Exceptions like Switzerland (+0.25) suggests that specific high-service-export structures (EDS) can indeed override domestic efficiency gains.
-    \item \textbf{Energy Structure Divide:} Counterintuitively, countries with \textit{lower} renewable energy shares see stronger ICT-driven reductions.
+    \item \textbf{Development Divide (with Exceptions):} Wealthier nations \textit{generally} benefit more from domestic digital capacity (GATEs confirm strong reductions in the top quartiles), yet a subset (e.g., FIN, SWE, CHE, CAN) exhibits notably weaker reductions.
+    \item \textbf{EDS Alignment:} Higher EDS is associated with weaker reductions (positive correlation), suggesting export structure can dampen domestic efficiency gains without reversing them.
+    \item \textbf{Energy Structure Divide:} Counterintuitively, countries with \textit{lower} renewable energy shares see stronger DCI-driven reductions.
 \end{enumerate}
 
 \subsection{Mechanism Interpretation}
 
 We propose two non-mutually exclusive mechanisms:
 
-\textbf{Enabling Conditions Hypothesis}: Strong institutions enable effective environmental regulation, ensuring that efficiency gains from ICT translate to emission reductions rather than increased consumption (rebound effects).
+\textbf{Enabling Conditions Hypothesis}: Strong institutions enable effective environmental regulation, ensuring that efficiency gains from ICT translate to emission reductions rather than diminished benefits.
 
 \textbf{Structural Transformation Hypothesis}: ICT development in wealthy economies represents a shift toward service-based, knowledge-intensive production that is inherently less carbon-intensive.
 
@@ -401,7 +401,7 @@ We propose two non-mutually exclusive mechanisms:
 
 \textbf{For Developed Economies:}
 \begin{quote}
-The aggregate trend suggests \textbf{domestic digital capacity (DCI)} can be a decarbonization lever. However, \textbf{high-EDS structural exceptions (e.g., Switzerland)} indicate that efficiency gains may be offset by rebound effects in specific service-export-intensive contexts. Policy should therefore complement digital investment with measures targeting \textbf{absolute decoupling}.
+The aggregate trend suggests \textbf{domestic digital capacity (DCI)} can be a decarbonization lever. However, \textbf{high-EDS structural exceptions} indicate that efficiency gains may be weaker in specific service-export-intensive contexts. Policy should therefore complement digital investment with measures targeting \textbf{absolute decoupling}.
 \end{quote}
 
 \textbf{For Developing Economies:} 
@@ -423,12 +423,12 @@ The aggregate trend suggests \textbf{domestic digital capacity (DCI)} can be a d
 \section{Conclusion}
 %==============================================================================
 
-This paper introduces the concept of the ``Digital Decarbonization Divide'' and provides rigorous empirical evidence for its existence. Using Causal Forest DML on a balanced panel of 40 economies ($N=960$), we find that:
+This paper introduces the concept of the ``Digital Decarbonization Divide'' and provides rigorous empirical evidence for its existence. Using Causal Forest DML on a panel of 40 economies ($N=840$ after excluding missing CO$_2$ outcomes), we find that:
 
 \begin{enumerate}
     \item \textbf{Domestic digital capacity (DCI)} exhibits fundamentally non-linear effects on CO$_2$ emissions.
     \item \textbf{GATEs} reveal a clear progression from near-zero effects in low-capacity economies to strong reductions in high-capacity economies.
-    \item \textbf{Structural exceptions exist:} ``off-diagonal'' cases (e.g., \textbf{Switzerland}) indicate that \textbf{high external digital specialization (EDS)} can override domestic efficiency gains and generate rebound effects.
+    \item \textbf{Structural exceptions exist:} ``off-diagonal'' cases indicate that \textbf{high external digital specialization (EDS)} can dampen domestic efficiency gains.
     \item The \textbf{Model Ladder} demonstrates that flexible estimation is required to capture policy-relevant thresholds and exceptions missed by linear models.
 \end{enumerate}
 

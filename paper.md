@@ -11,6 +11,8 @@ abstract: |
 keywords: "Causal Forest, Double Machine Learning, Heterogeneous Treatment Effects, Socio-economic Capacity, Economic Development, Institutional Quality"
 ---
 
+> **Legacy draft:** This Markdown version is not maintained. Use `paper.tex` as the source of truth for current results and wording.
+
 # 1. Introduction
 
 The potential of the digital economy to drive environmental sustainability is a subject of intense debate. While digitalization offers pathways to dematerialization and efficiency, it also entails a growing energy footprint from data centers, network infrastructure, and electronic devices (Lange et al., 2020). Previous empirical studies have produced mixed results, often constrained by small sample sizes, omitted variable bias, and linear functional form assumptions (Salahuddin & Alam, 2016).
