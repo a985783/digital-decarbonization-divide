@@ -19,7 +19,7 @@ warnings.filterwarnings('ignore')
 # Configuration
 RESULTS_DIR = 'results'
 DATA_DIR = 'data' # Added DATA_DIR
-FINPUT_FILE = os.path.join(DATA_DIR, 'clean_data_v3_imputed.csv')
+FINPUT_FILE = os.path.join(DATA_DIR, 'clean_data_v4_imputed.csv')
 INPUT_CATE = os.path.join(RESULTS_DIR, 'rebuttal_forest_cate.csv')
 INPUT_GATE = os.path.join(RESULTS_DIR, 'rebuttal_gate.csv')
 INPUT_COUNTRY = os.path.join(RESULTS_DIR, 'rebuttal_country_cates.csv')
@@ -91,8 +91,8 @@ def plot_linear_vs_forest(df):
     ax.legend()
     
     # Annotate Divergence
-    ax.text(0.1, 0.1, "Linear model\noverestimates here", transform=ax.transAxes, color='blue')
-    ax.text(0.8, 0.1, "Forest detects\nrebound effect", transform=ax.transAxes, color='red')
+    ax.text(0.1, 0.1, "Linear model\nmisses non-linearity", transform=ax.transAxes, color='blue')
+    ax.text(0.8, 0.1, "Forest detects\nnon-linearities", transform=ax.transAxes, color='red')
     
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'linear_vs_forest.png'), dpi=300)
@@ -138,7 +138,7 @@ def analyze_off_diagonal(df, cates, country_cis):
     
     # Highlight specific countries
     for i, row in top_bot.iterrows():
-        if row['Country'] in ['USA', 'CHN', 'DEU', 'CHE']:
+        if row['Country'] in ['FIN', 'SWE', 'CHE', 'CAN']:
             plt.text(row['Mean_CATE'], i, f"  {row['Country']}", va='center', fontweight='bold', color='blue')
 
     output_file = os.path.join(FIGURES_DIR, 'off_diagonal_cis.png')

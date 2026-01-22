@@ -63,7 +63,7 @@ def prepare_data(df, cfg):
     X_df = df[x_cols].copy()
     meta_df = df[["country", "year"]].copy()
 
-    return y, t, x, w, W_df, X_df, meta_df, w_cols, x_cols, groups
+    return y, t, x, w, W_df, X_df, meta_df, w_cols, x_cols, groups, df
 
 
 def run_causal_forest():
@@ -78,7 +78,19 @@ def run_causal_forest():
     print(f"   Loaded {len(df)} observations, {len(df.columns)} variables")
     
     # Prepare data
-    Y, T, X, W, W_df, X_df, meta_df, w_cols, x_cols, groups = prepare_data(df, cfg)
+    (
+        Y,
+        T,
+        X,
+        W,
+        W_df,
+        X_df,
+        meta_df,
+        w_cols,
+        x_cols,
+        groups,
+        df_clean,
+    ) = prepare_data(df, cfg)
     print(f"   Analysis sample: N = {len(Y)}")
     print(f"   Controls (W): {len(w_cols)} variables")
     print(f"   Moderators (X): {len(x_cols)} variables")
@@ -132,7 +144,7 @@ def run_causal_forest():
     cate_lb, cate_ub = est.effect_interval(X, alpha=0.05)
     
     # Build results DataFrame
-    results_df = df.copy()
+    results_df = df_clean.copy()
     results_df['country'] = meta_df['country'].values
     results_df['year'] = meta_df['year'].values
     results_df['CATE'] = cate_pred.flatten()
@@ -168,8 +180,8 @@ def run_causal_forest():
     reducing = (results_df['CATE'] < 0).sum()
     increasing = (results_df['CATE'] > 0).sum()
     print(f"\n3. Effect Direction:")
-    print(f"   ICT reduces CO2:    {reducing} observations ({reducing/len(results_df)*100:.1f}%)")
-    print(f"   ICT increases CO2:  {increasing} observations ({increasing/len(results_df)*100:.1f}%)")
+    print(f"   DCI reduces CO2:    {reducing} observations ({reducing/len(results_df)*100:.1f}%)")
+    print(f"   DCI increases CO2:  {increasing} observations ({increasing/len(results_df)*100:.1f}%)")
     
     # Correlation with moderators
     print(f"\n4. Correlation between CATE and Key Moderators:")
@@ -195,7 +207,11 @@ def run_causal_forest():
         cfg["treatment_main"],
         cfg["treatment_secondary"],
     ] + x_cols + w_cols
-    results_df[output_cols].to_csv(OUTPUT_FILE, index=False)
+    deduped = []
+    for col in output_cols:
+        if col not in deduped:
+            deduped.append(col)
+    results_df[deduped].to_csv(OUTPUT_FILE, index=False)
     
     print("=" * 70)
     

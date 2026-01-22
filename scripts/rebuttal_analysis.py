@@ -27,6 +27,7 @@ from sklearn.preprocessing import StandardScaler
 
 from scripts.analysis_config import load_config
 from scripts.dci import build_dci
+from scripts.joblib_utils import resolve_n_jobs
 
 try:
     from econml.dml import CausalForestDML, LinearDML
@@ -260,7 +261,8 @@ def run_model_inference_ladder(df, target, treatment, X_cols, W_cols, n_boot=100
         return res
 
     print("   Running Parallel Bootstrap...")
-    results_list = Parallel(n_jobs=-1, verbose=5)(delayed(bootstrap_iter)(i) for i in range(n_boot))
+    n_jobs = resolve_n_jobs()
+    results_list = Parallel(n_jobs=n_jobs, verbose=5)(delayed(bootstrap_iter)(i) for i in range(n_boot))
     
     for r in results_list:
         if r['L0'] is not None: boot_res['L0'].append(r['L0'])
