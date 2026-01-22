@@ -8,40 +8,38 @@ Implements Leakage-Safe Cross-Fitting.
 
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import KFold
+from sklearn.model_selection import GroupKFold
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 import statsmodels.api as sm
 import os
 import json
 
+from scripts.analysis_config import load_config
+from scripts.analysis_data import prepare_analysis_data
+
 # Configuration
 DATA_DIR = 'data'
 RESULTS_DIR = 'results'
-INPUT_FILE = os.path.join(DATA_DIR, 'clean_data_v3_imputed.csv')
+INPUT_FILE = os.path.join(DATA_DIR, 'clean_data_v4_imputed.csv')
 SELECTED_VARS_FILE = os.path.join(DATA_DIR, 'lasso_selected_features.json')
 OUTPUT_FILE = os.path.join(RESULTS_DIR, 'dml_results_v3.csv')
 
-def dml_estimation(df, y_col, t_col, w_cols, n_splits=5):
+def dml_estimation(y, t, w, groups, n_splits=5):
     """
     Performs Double Machine Learning with Cross-Fitting.
     Model Y: Y ~ W (XGBoost)
     Model T: T ~ W (XGBoost)
     Final: Y_res ~ T_res (OLS)
     """
-    kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
-    
-    y = df[y_col].values
-    t = df[t_col].values
-    W = df[w_cols].values
-    
     y_res = np.zeros_like(y)
     t_res = np.zeros_like(t)
     
-    print(f"  DML with {len(w_cols)} controls...")
+    print(f"  DML with {w.shape[1]} controls...")
     
-    for train_idx, test_idx in kf.split(W):
-        W_train, W_test = W[train_idx], W[test_idx]
+    gkf = GroupKFold(n_splits=n_splits)
+    for train_idx, test_idx in gkf.split(w, groups=groups):
+        W_train, W_test = w[train_idx], w[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
         t_train, t_test = t[train_idx], t[test_idx]
         
@@ -68,50 +66,50 @@ def dml_estimation(df, y_col, t_col, w_cols, n_splits=5):
 
 def run_analysis():
     print("Loading data...")
+    cfg = load_config("analysis_spec.yaml")
     df = pd.read_csv(INPUT_FILE)
     
-    df['CO2_per_capita'] = df['CO2_per_capita'] / 100.0
-    print("✓ Applied Unit Correction: CO2 / 100")
-    
-    target = 'CO2_per_capita'
-    treatment = 'ICT_exports'
+    target = cfg["outcome"]
+    treatment = cfg["treatment_main"]
     
     n_before = len(df)
-    df = df.dropna(subset=[target, treatment])
-    n_after = len(df)
-    print(f"✓ Applied Target/Treatment Leakage Safety: Dropped {n_before - n_after} rows with missing Y/T.")
-    print(f"  Analysis Sample N={n_after}")
+    df = df.dropna(subset=[target])
+    y, t, x, w, df = prepare_analysis_data(df, cfg, return_df=True)
+    groups = df[cfg["groups"]].values
+    mask = ~np.isnan(y) & ~np.isnan(t)
+    y, t, w, groups = y[mask], t[mask], w[mask], groups[mask]
+    print(f"✓ Applied Target/Treatment Leakage Safety: Dropped {n_before - len(y)} rows with missing Y/T.")
+    print(f"  Analysis Sample N={len(y)}")
     
     with open(SELECTED_VARS_FILE, 'r') as f:
         lasso_vars = json.load(f)
     
-    exclude = ['country', 'year', target, treatment, 'OECD']
-    all_vars = [c for c in df.columns if c not in exclude]
+    all_vars = cfg["controls_W"]
     
     results = []
     
     print("\n--- Spec 1: Lasso Selected (Baseline) ---")
-    res1 = dml_estimation(df, target, treatment, lasso_vars)
+    res1 = dml_estimation(y, t, df[lasso_vars].values, groups)
     res1['spec'] = 'Lasso Selected'
     results.append(res1)
     
     lasso_no_energy = [v for v in lasso_vars if 'Energy' not in v] 
     print("\n--- Spec 2: Lasso (No Energy) [Total Effect?] ---")
     if lasso_no_energy:
-        res2 = dml_estimation(df, target, treatment, lasso_no_energy)
+        res2 = dml_estimation(y, t, df[lasso_no_energy].values, groups)
         res2['spec'] = 'Lasso (No Energy)'
         results.append(res2)
     else:
         print("Skipping Spec 2 (No variables left)")
 
     print("\n--- Spec 3: Full High-Dim (All Controls) [Direct Effect] ---")
-    res3 = dml_estimation(df, target, treatment, all_vars)
+    res3 = dml_estimation(y, t, df[all_vars].values, groups)
     res3['spec'] = 'Full High-Dimensional'
     results.append(res3)
 
     all_no_energy = [v for v in all_vars if 'Energy' not in v]
     print("\n--- Spec 4: Full High-Dim (No Energy) [Total Effect] ---")
-    res4 = dml_estimation(df, target, treatment, all_no_energy)
+    res4 = dml_estimation(y, t, df[all_no_energy].values, groups)
     res4['spec'] = 'Full High-Dimensional (No Energy)'
     results.append(res4)
     

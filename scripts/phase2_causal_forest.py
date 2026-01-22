@@ -11,6 +11,11 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
+from sklearn.model_selection import GroupKFold
+
+from scripts.analysis_config import load_config
+from scripts.analysis_data import prepare_analysis_data
+
 # Try to import econml, provide installation instructions if missing
 try:
     from econml.dml import CausalForestDML
@@ -31,52 +36,34 @@ except ImportError:
     import xgboost as xgb
 
 # Configuration
-DATA_DIR = 'data'
-RESULTS_DIR = 'results'
-INPUT_FILE = os.path.join(DATA_DIR, 'clean_data_v3_imputed.csv')
-OUTPUT_FILE = os.path.join(RESULTS_DIR, 'causal_forest_cate.csv')
+DATA_DIR = "data"
+RESULTS_DIR = "results"
+INPUT_FILE = os.path.join(DATA_DIR, "clean_data_v4_imputed.csv")
+OUTPUT_FILE = os.path.join(RESULTS_DIR, "causal_forest_cate.csv")
 
-def prepare_data(df):
+def prepare_data(df, cfg):
     """Prepare data for Causal Forest analysis."""
-    target = 'CO2_per_capita'
-    treatment = 'ICT_exports'
-    
-    # Key moderating variables (used for heterogeneity detection)
-    moderators = [
-        'Control_of_Corruption', 'Rule_of_Law', 'Government_Effectiveness',
-        'Regulatory_Quality', 'GDP_per_capita_constant', 'Renewable_energy_consumption_pct',
-        'Energy_use_per_capita', 'Urban_population_pct', 'Internet_users'
-    ]
-    
-    # Exclude identifiers and outcome/treatment
-    exclude = ['country', 'year', target, treatment, 'OECD']
-    w_cols = [c for c in df.columns if c not in exclude]
-    
-    # Drop rows with missing core variables
-    df = df.dropna(subset=[target, treatment])
-    
-    # ⚠️ CRITICAL: Unit correction for CO2
-    # Raw data appears to be in 0.01 metric tons, need to convert to metric tons
-    df[target] = df[target] / 100.0
-    print(f"   ✓ Applied CO2 unit correction: divided by 100")
-    print(f"   CO2 mean after correction: {df[target].mean():.2f} metric tons/capita")
-    
-    # Fill remaining NAs in controls with median
-    for col in w_cols:
-        if df[col].isna().any():
-            df[col] = df[col].fillna(df[col].median())
-    
-    Y = df[target].values
-    T = df[treatment].values
-    W = df[w_cols].values
-    
-    # Create DataFrame for W with column names (for interpretability)
+    df = df.dropna(subset=[cfg["outcome"]])
+    y, t, x, w, df = prepare_analysis_data(df, cfg, return_df=True)
+    groups = df[cfg["groups"]].values
+    mask = ~np.isnan(y) & ~np.isnan(t)
+    y, t, x, w, df, groups = (
+        y[mask],
+        t[mask],
+        x[mask],
+        w[mask],
+        df.iloc[mask],
+        groups[mask],
+    )
+
+    w_cols = cfg["controls_W"]
+    x_cols = cfg["moderators_X"]
+
     W_df = df[w_cols].copy()
-    
-    # Store country/year for later
-    meta_df = df[['country', 'year']].copy()
-    
-    return Y, T, W, W_df, meta_df, w_cols
+    X_df = df[x_cols].copy()
+    meta_df = df[["country", "year"]].copy()
+
+    return y, t, x, w, W_df, X_df, meta_df, w_cols, x_cols, groups
 
 
 def run_causal_forest():
@@ -86,13 +73,15 @@ def run_causal_forest():
     
     # Load data
     print("\n📂 Loading data...")
+    cfg = load_config("analysis_spec.yaml")
     df = pd.read_csv(INPUT_FILE)
     print(f"   Loaded {len(df)} observations, {len(df.columns)} variables")
     
     # Prepare data
-    Y, T, W, W_df, meta_df, w_cols = prepare_data(df)
+    Y, T, X, W, W_df, X_df, meta_df, w_cols, x_cols, groups = prepare_data(df, cfg)
     print(f"   Analysis sample: N = {len(Y)}")
-    print(f"   Features for heterogeneity: {len(w_cols)} variables")
+    print(f"   Controls (W): {len(w_cols)} variables")
+    print(f"   Moderators (X): {len(x_cols)} variables")
     
     # Configure Causal Forest
     print("\n🌲 Configuring Causal Forest DML...")
@@ -123,7 +112,8 @@ def run_causal_forest():
         max_depth=6,
         random_state=42,
         discrete_treatment=False,
-        n_jobs=-1
+        n_jobs=-1,
+        cv=GroupKFold(n_splits=cfg["cv"]["n_splits"]),
     )
     
     # Fit the model
@@ -131,18 +121,18 @@ def run_causal_forest():
     import time
     start_time = time.time()
     
-    est.fit(Y, T, X=W, W=W)
+    est.fit(Y, T, X=X, W=W, groups=groups)
     
     elapsed = time.time() - start_time
     print(f"   ✓ Training completed in {elapsed:.1f} seconds")
     
     # Extract CATE predictions
     print("\n📊 Extracting CATE predictions...")
-    cate_pred = est.effect(W)
-    cate_lb, cate_ub = est.effect_interval(W, alpha=0.05)
+    cate_pred = est.effect(X)
+    cate_lb, cate_ub = est.effect_interval(X, alpha=0.05)
     
     # Build results DataFrame
-    results_df = W_df.copy()
+    results_df = df.copy()
     results_df['country'] = meta_df['country'].values
     results_df['year'] = meta_df['year'].values
     results_df['CATE'] = cate_pred.flatten()
@@ -194,8 +184,17 @@ def run_causal_forest():
     print(f"\n💾 Saving results to: {OUTPUT_FILE}")
     
     # Reorder columns for output
-    output_cols = ['country', 'year', 'CATE', 'CATE_LB', 'CATE_UB', 'Significant', 
-                   'Effect_Direction'] + w_cols
+    output_cols = [
+        "country",
+        "year",
+        "CATE",
+        "CATE_LB",
+        "CATE_UB",
+        "Significant",
+        "Effect_Direction",
+        cfg["treatment_main"],
+        cfg["treatment_secondary"],
+    ] + x_cols + w_cols
     results_df[output_cols].to_csv(OUTPUT_FILE, index=False)
     
     print("=" * 70)

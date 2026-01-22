@@ -1,34 +1,33 @@
 """
 Phase 1: MVP Check - Interaction Term Verification
 ===================================================
-验证ICT对CO2排放的异质性效应是否存在。
-通过加入 ICT × Control_of_Corruption 交互项进行检验。
+验证DCI对CO2排放的异质性效应是否存在。
+通过加入 DCI × Control_of_Corruption 交互项进行检验。
 如果交互项系数显著 → 说明异质性存在，继续Phase 2。
 """
 
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import KFold
+from sklearn.model_selection import GroupKFold
 from xgboost import XGBRegressor
 import statsmodels.api as sm
 import os
 
-# Configuration
-DATA_DIR = 'data'
-RESULTS_DIR = 'results'
-INPUT_FILE = os.path.join(DATA_DIR, 'clean_data_v3_imputed.csv')
+from scripts.analysis_config import load_config
+from scripts.analysis_data import prepare_analysis_data
 
-def dml_with_interaction(df, y_col, t_col, mod_col, w_cols, n_splits=5):
+# Configuration
+DATA_DIR = "data"
+RESULTS_DIR = "results"
+INPUT_FILE = os.path.join(DATA_DIR, "clean_data_v4_imputed.csv")
+
+def dml_with_interaction(y, t, m, w, groups, n_splits=5):
     """
     DML with Interaction Term.
     Model: Y = β₁T + β₂(T×M) + ε
     where T is treatment (ICT), M is moderator (Institution)
     """
-    kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
-    
-    y = df[y_col].values
-    t = df[t_col].values
-    m = df[mod_col].values
+    gkf = GroupKFold(n_splits=n_splits)
     
     # Center variables for interpretable interaction
     t_centered = t - np.mean(t)
@@ -37,16 +36,14 @@ def dml_with_interaction(df, y_col, t_col, mod_col, w_cols, n_splits=5):
     # Create interaction term
     interaction = t_centered * m_centered
     
-    W = df[w_cols].values
-    
     y_res = np.zeros_like(y, dtype=float)
     t_res = np.zeros_like(t, dtype=float)
     int_res = np.zeros_like(interaction, dtype=float)
     
-    print(f"  DML with {len(w_cols)} controls + interaction term...")
+    print(f"  DML with {w.shape[1]} controls + interaction term...")
     
-    for train_idx, test_idx in kf.split(W):
-        W_train, W_test = W[train_idx], W[test_idx]
+    for train_idx, test_idx in gkf.split(w, groups=groups):
+        w_train, w_test = w[train_idx], w[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
         t_train, t_test = t_centered[train_idx], t_centered[test_idx]
         int_train, int_test = interaction[train_idx], interaction[test_idx]
@@ -54,22 +51,22 @@ def dml_with_interaction(df, y_col, t_col, mod_col, w_cols, n_splits=5):
         # Model Y
         model_y = XGBRegressor(n_estimators=100, max_depth=3, learning_rate=0.1, 
                                n_jobs=-1, random_state=42, verbosity=0)
-        model_y.fit(W_train, y_train)
-        y_pred = model_y.predict(W_test)
+        model_y.fit(w_train, y_train)
+        y_pred = model_y.predict(w_test)
         y_res[test_idx] = y_test - y_pred
         
         # Model T (centered)
         model_t = XGBRegressor(n_estimators=100, max_depth=3, learning_rate=0.1, 
                                n_jobs=-1, random_state=42, verbosity=0)
-        model_t.fit(W_train, t_train)
-        t_pred = model_t.predict(W_test)
+        model_t.fit(w_train, t_train)
+        t_pred = model_t.predict(w_test)
         t_res[test_idx] = t_test - t_pred
         
         # Model Interaction
         model_int = XGBRegressor(n_estimators=100, max_depth=3, learning_rate=0.1, 
                                  n_jobs=-1, random_state=42, verbosity=0)
-        model_int.fit(W_train, int_train)
-        int_pred = model_int.predict(W_test)
+        model_int.fit(w_train, int_train)
+        int_pred = model_int.predict(w_test)
         int_res[test_idx] = int_test - int_pred
     
     # Final stage: regress Y_res on [T_res, Interaction_res]
@@ -94,51 +91,44 @@ def run_mvp_check():
     print("=" * 60)
     
     print("\n📂 Loading data...")
+    cfg = load_config("analysis_spec.yaml")
     df = pd.read_csv(INPUT_FILE)
     print(f"   Loaded {len(df)} observations, {len(df.columns)} variables")
     
-    # Define variables
-    target = 'CO2_per_capita'
-    treatment = 'ICT_exports'
-    moderator = 'Control_of_Corruption'
-    
-    # Check for missing values
-    n_before = len(df)
-    df = df.dropna(subset=[target, treatment, moderator])
-    n_after = len(df)
-    print(f"   Dropped {n_before - n_after} rows with missing core variables")
-    print(f"   Analysis sample: N = {n_after}")
-    
-    # ⚠️ CRITICAL: Unit correction for CO2
-    df[target] = df[target] / 100.0
-    print(f"   ✓ Applied CO2 unit correction: divided by 100")
-    print(f"   CO2 mean: {df[target].mean():.2f} metric tons/capita")
-    
-    # Define control variables (exclude core vars and identifiers)
-    exclude = ['country', 'year', target, treatment, moderator, 'OECD']
-    w_cols = [c for c in df.columns if c not in exclude and df[c].notna().mean() > 0.8]
-    
-    # Fill remaining NA in controls
-    for col in w_cols:
-        df[col] = df[col].fillna(df[col].median())
-    
-    print(f"   Using {len(w_cols)} control variables")
+    target = cfg["outcome"]
+    treatment = cfg["treatment_main"]
+    moderator = "Control_of_Corruption"
+
+    df = df.dropna(subset=[target, moderator])
+    y, t, x, w, df = prepare_analysis_data(df, cfg, return_df=True)
+    m = df[moderator].values
+    groups = df[cfg["groups"]].values
+    mask = ~np.isnan(y) & ~np.isnan(t) & ~np.isnan(m)
+    y, t, m, w, groups = y[mask], t[mask], m[mask], w[mask], groups[mask]
+    print(f"   Analysis sample: N = {len(y)}")
     
     # Run DML with interaction
     print("\n🔬 Running DML with Interaction Term...")
-    results = dml_with_interaction(df, target, treatment, moderator, w_cols)
+    results = dml_with_interaction(
+        y,
+        t,
+        m,
+        w,
+        groups,
+        n_splits=cfg["cv"]["n_splits"],
+    )
     
     # Display results
     print("\n" + "=" * 60)
     print("📊 MVP CHECK RESULTS")
     print("=" * 60)
     
-    print(f"\n1. Main Effect (ICT → CO2):")
+    print(f"\n1. Main Effect (DCI → CO2):")
     print(f"   Coefficient: {results['coef_treatment']:.6f}")
     print(f"   Std Error:   {results['se_treatment']:.6f}")
     print(f"   P-value:     {results['p_treatment']:.4f}")
     
-    print(f"\n2. Interaction Effect (ICT × Institution → CO2):")
+    print(f"\n2. Interaction Effect (DCI × Institution → CO2):")
     print(f"   Coefficient: {results['coef_interaction']:.6f}")
     print(f"   Std Error:   {results['se_interaction']:.6f}")
     print(f"   P-value:     {results['p_interaction']:.4f}")

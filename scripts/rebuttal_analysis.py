@@ -25,6 +25,9 @@ warnings.filterwarnings('ignore')
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
+from scripts.analysis_config import load_config
+from scripts.dci import build_dci
+
 try:
     from econml.dml import CausalForestDML, LinearDML
     print("✓ econml loaded")
@@ -34,7 +37,7 @@ except ImportError:
 # Configuration
 DATA_DIR = 'data'
 RESULTS_DIR = 'results'
-INPUT_FILE = os.path.join(DATA_DIR, 'clean_data_v3_imputed.csv')
+INPUT_FILE = os.path.join(DATA_DIR, 'clean_data_v4_imputed.csv')
 OUTPUT_LADDER = os.path.join(RESULTS_DIR, 'model_ladder.csv')
 OUTPUT_GATE = os.path.join(RESULTS_DIR, 'rebuttal_gate.csv')
 OUTPUT_CATE = os.path.join(RESULTS_DIR, 'rebuttal_forest_cate.csv')
@@ -42,42 +45,15 @@ OUTPUT_COUNTRY_CATES = os.path.join(RESULTS_DIR, 'rebuttal_country_cates.csv')
 
 def construct_dci(df):
     """
-    Construct Domestic Digital Capacity Index (DCI) via PCA.
-    Simulates missing components (Broadband, Servers) using Internet Users + GDP.
+    Construct Domestic Digital Capacity Index (DCI) via PCA
+    using real WDI components.
     """
     print("\n🏗️  Constructing Domestic Digital Capacity Index (DCI)...")
-    
-    # 1. Simulation of missing DCI components (validated by User)
-    np.random.seed(42)
-    n = len(df)
-    
-    # Fixed Broadband: Highly correlated with Internet & GDP, capped at 100
-    # Base: 0.8 * df['Internet_users'] + noise
-    df['Fixed_broadband'] = 0.8 * df['Internet_users'] + np.random.normal(0, 5, n)
-    df['Fixed_broadband'] = df['Fixed_broadband'].clip(0, 100)
-    
-    # Secure Servers: Log-linear with GDP & Internet
-    # Base: exp(constant + coeff*logGDP + coeff*Internet)
-    log_servers = -5 + 0.8 * np.log1p(df['GDP_per_capita_constant']) + 0.02 * df['Internet_users'] + np.random.normal(0, 0.5, n)
-    df['Secure_servers'] = np.expm1(log_servers)
-    
-    # 2. PCA
-    dci_vars = ['Internet_users', 'Fixed_broadband', 'Secure_servers']
+    cfg = load_config("analysis_spec.yaml")
+    dci_vars = cfg["dci_components"]
     print(f"   Components: {dci_vars}")
-    
-    # Standardize first
-    scaler = StandardScaler()
-    X_dci = scaler.fit_transform(df[dci_vars])
-    
-    pca = PCA(n_components=1)
-    df['DCI'] = pca.fit_transform(X_dci)
-    
-    # Ensure positive direction (higher index = more digital)
-    # Check correlation with Internet_users
-    if np.corrcoef(df['DCI'], df['Internet_users'])[0,1] < 0:
-        df['DCI'] = -df['DCI']
-        
-    expl_var = pca.explained_variance_ratio_[0]
+    dci, expl_var = build_dci(df, dci_vars)
+    df["DCI"] = dci
     print(f"   PC1 Explained Variance: {expl_var:.2%}")
     print("   ✓ DCI Constructed.")
     return df
@@ -125,6 +101,8 @@ def prepare_data_v2(df):
     # 1. Construct DCI
     df = construct_dci(df)
     
+    cfg = load_config("analysis_spec.yaml")
+
     # 2. Key Variable Assignment & Lagging
     target = 'CO2_per_capita'
     raw_treatment = 'DCI'
@@ -139,18 +117,18 @@ def prepare_data_v2(df):
         df = df.rename(columns={'ICT_exports': 'EDS'})
     
     # 3. Moderators (X): DCI interacts with Development & EDS
-    moderators = [
-        'GDP_per_capita_constant', 
-        'EDS',
-        'Control_of_Corruption', 
-        'Energy_use_per_capita', 
-        'Renewable_energy_consumption_pct',
-        'Urban_population_pct'
-    ]
+    moderators = cfg["moderators_X"]
     
     # 4. Controls (W)
-    exclude_cols = ['country', 'year', target, treatment, raw_treatment, 'EDS', 'OECD',
-                    'Internet_users', 'Fixed_broadband', 'Secure_servers'] + moderators
+    exclude_cols = [
+        "country",
+        "year",
+        target,
+        treatment,
+        raw_treatment,
+        "EDS",
+        "OECD",
+    ] + cfg["dci_components"] + moderators
                     
     w_cols = [c for c in df.columns if c not in exclude_cols]
     
