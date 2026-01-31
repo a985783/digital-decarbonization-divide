@@ -1,0 +1,2 @@
+mediation_total_effect,mediation_indirect_effect,mediation_sobel_p,triple_interaction_coef,triple_interaction_p,triple_two_way_ti_p,triple_two_way_tr_p,sample_size
+-2.938164529046798,-0.34278736559970113,7.598822950427575e-06,0.028720356579722207,0.00021606111927415138,0.4459368780745129,0.0016200466591381215,840

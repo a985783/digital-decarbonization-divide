@@ -1,1 +1,23 @@
-.worktrees/
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.pdf
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.toc
+*.xdv
+
+# Project Specific
+*.zip
+data/temp_downloads/

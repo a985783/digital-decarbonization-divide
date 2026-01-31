@@ -308,20 +308,39 @@ def run_model_inference_ladder(df, target, treatment, X_cols, W_cols, n_boot=100
 # ------------------------------------------------------------------------------
 
 def compute_gates_and_country_cis(df, X_cols, est_forest, n_boot=1000):
-    print(f"\n🔍 Computing GATEs & Country CIs (B={n_boot})...")
+    print(f"\n🔍 Computing Multidimensional GATEs & Country CIs (B={n_boot})...")
     
     # Predict CATEs
     X = df[X_cols].values
     cates = est_forest.effect(X)
     df['CATE'] = cates
     
-    # Define Groups by Quartiles of GDP
+    # Define Groups for Multidimensional GATEs
+    
+    # 1. Economic Development (GDP)
     df['GDP_Group'] = pd.qcut(df['GDP_per_capita_constant'], 4, labels=['Low', 'Lower-Mid', 'Upper-Mid', 'High'])
     
+    # 2. Digital Maturity (DCI)
+    # Note: DCI is constructed in-sample, but using lagged DCI for classification is valid
+    if 'DCI_L1' in df.columns:
+        df['DCI_Group'] = pd.qcut(df['DCI_L1'], 4, labels=['Digital-Low', 'Digital-MidLow', 'Digital-MidHigh', 'Digital-High'])
+        
+    # 3. Institutional Quality (Control of Corruption)
+    if 'Control_of_Corruption' in df.columns:
+        df['Inst_Group'] = pd.qcut(df['Control_of_Corruption'], 4, labels=['Inst-Weak', 'Inst-MidWeak', 'Inst-MidStrong', 'Inst-Strong'])
+        
+    # 4. Energy Structure (Renewable %)
+    if 'Renewable_energy_consumption_pct' in df.columns:
+        df['Renewable_Group'] = pd.qcut(df['Renewable_energy_consumption_pct'], 4, labels=['Brown', 'Mix-Brown', 'Mix-Green', 'Green'])
+    
+    group_vars = [col for col in ['GDP_Group', 'DCI_Group', 'Inst_Group', 'Renewable_Group'] if col in df.columns]
+    print(f"   GATE Dimensions: {group_vars}")
+
     # Bootstrap
     countries = df['country'].unique()
-    bootstrap_means = {g: [] for g in df['GDP_Group'].unique()}
-    bootstrap_country = {c: [] for c in countries}
+    
+    # Initialize bootstrap storage
+    bootstrap_means = {g_var: {g_val: [] for g_val in df[g_var].unique()} for g_var in group_vars}
     
     for i in tqdm(range(n_boot)):
         # Resample countries (block bootstrap)
@@ -332,19 +351,13 @@ def compute_gates_and_country_cis(df, X_cols, est_forest, n_boot=1000):
             
         boot_df = df.loc[boot_idx]
         
-        # 1. GATEs (Stratified Means of Sample)
-        # Note: This quantifies the uncertainty of the *Population Average* in the strata
-        grp_means = boot_df.groupby('GDP_Group')['CATE'].mean()
-        for g in grp_means.index:
-            bootstrap_means[g].append(grp_means[g])
+        # Calculate GATEs for each dimension
+        for g_var in group_vars:
+            grp_means = boot_df.groupby(g_var)['CATE'].mean()
+            for g_val in grp_means.index:
+                bootstrap_means[g_var][g_val].append(grp_means[g_val])
             
     # Country-Specific CIs (Bootstrap Years within Country)
-    # Since resampling countries doesn't give within-country variance for a fixed country,
-    # we do a separate loop or just trust the Forest's Pointwise Inference?
-    # User asked for "Country-average CATE + Cluster Bootstrap CI".
-    # Relying on Block Bootstrap (resampling countries) works for *Aggregates* like GATEs.
-    # For *Single Country*, we need to resample *within* the country (Years).
-    
     print("   Bootstrapping Country-Level CIs (Resampling Years)...")
     country_res = []
     
@@ -366,18 +379,21 @@ def compute_gates_and_country_cis(df, X_cols, est_forest, n_boot=1000):
         
     # Compile GATEs
     final_gates = []
-    for g in ['Low', 'Lower-Mid', 'Upper-Mid', 'High']:
-        means = np.array(bootstrap_means[g])
-        final_gates.append({
-            'Group': g,
-            'GATE': np.mean(means),
-            'CI_Lower': np.percentile(means, 2.5),
-            'CI_Upper': np.percentile(means, 97.5)
-        })
+    
+    for g_var in group_vars:
+        for g_val in bootstrap_means[g_var].keys():
+            means = np.array(bootstrap_means[g_var][g_val])
+            final_gates.append({
+                'Dimension': g_var,
+                'Group': g_val,
+                'GATE': np.mean(means),
+                'CI_Lower': np.percentile(means, 2.5),
+                'CI_Upper': np.percentile(means, 97.5)
+            })
         
     pd.DataFrame(final_gates).to_csv(OUTPUT_GATE, index=False)
     pd.DataFrame(country_res).to_csv(OUTPUT_COUNTRY_CATES, index=False)
-    print("   Saved GATEs and Country CIs.")
+    print("   Saved Multidimensional GATEs and Country CIs.")
 
 # ------------------------------------------------------------------------------
 # 4. Placebo Tests

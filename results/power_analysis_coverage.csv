@@ -1,0 +1,10 @@
+Metric,Value
+Coverage_Rate,0.99
+Power,1.0
+Bias,0.07235995125141859
+RMSE,0.1226588874028254
+Mean_CI_Width,0.5809334209654968
+N_Simulations,100.0
+N_Countries,40.0
+N_Years,24.0
+True_ATE,-1.73
