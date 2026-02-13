@@ -616,7 +616,7 @@ def create_visualization(
     ax.set_title('DragonNet Propensity Score Distribution')
     ax.legend()
 
-    # 4. Training Loss Curve (placeholder for sklearn)
+    # 4. Training Loss Curve (not available for sklearn MLP)
     ax = axes[1, 0]
     if hasattr(dragonnet.propensity_model, 'loss_curve_'):
         ax.plot(dragonnet.propensity_model.loss_curve_, label='Propensity', color='#3498db')
