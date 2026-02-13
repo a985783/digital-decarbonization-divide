@@ -1,6 +1,11 @@
-# Data Manifest (v4 - High Dimensional, DCI Main)
+# Data Manifest (v5 - Enhanced Edition)
 
-This dataset has been augmented to support High-Dimensional Causal Inference. It now contains **62 variables** (excluding country/year; includes the OECD flag) covering 8 thematic domains.
+This enhanced dataset supports advanced causal inference analysis with **77 variables** (13 new engineered features). It covers 40 economies from 2000-2023 with comprehensive digital, economic, institutional, and environmental indicators.
+
+## Version History
+- **v5 (Current)**: Enhanced with 13 new features including interaction terms, polynomial terms, and institutional categories
+- **v4**: High-dimensional dataset with 62 variables and DCI main treatment
+- **v3**: Base dataset with imputed controls
 
 ## 1. Core Variables
 | Variable | Description | Source |
@@ -89,13 +94,37 @@ This dataset has been augmented to support High-Dimensional Causal Inference. It
 
 ---
 
-## 9. Sample Flags
+## 9. Enhanced Features (v5)
+
+The enhanced dataset (`clean_data_v5_enhanced.csv`) includes **13 additional engineered features**:
+
+### 9.1 Core Digital Connectivity Index
+*   `DCI`: Computed via PCA from Internet_users, Fixed_broadband_subscriptions, and Secure_servers (explained variance: 70.15%)
+
+### 9.2 Non-linear and Interaction Terms
+*   `DCI_squared`: Quadratic term capturing diminishing marginal returns to digitalization
+*   `log_GDP_per_capita`: Natural logarithm of GDP per capita
+*   `DCI_x_Trade_Openness`: Interaction between digital capacity and trade openness
+*   `DCI_x_Financial_Development`: Interaction with financial depth (Domestic_credit_to_private_sector)
+*   `DCI_x_Education_Level`: Interaction with tertiary enrollment
+*   `log_GDP_x_DCI_squared`: Three-way interaction capturing income-digitalization non-linearity
+
+### 9.3 Institutional Quality Categories
+*   `Institution_quality_index`: Average of 6 WGI indicators (mean 0, SD 1)
+*   `Institution_quality_category`: Categorical (High/Medium/Low)
+*   `Institution_quality_high`: Dummy for high institutional quality (top 33%)
+*   `Institution_quality_medium`: Dummy for medium institutional quality (middle 33%)
+*   `Institution_quality_low`: Dummy for low institutional quality (bottom 33%)
+
+---
+
+## 10. Sample Flags
 
 *   `OECD`: Binary indicator for OECD membership in the sample.
 
 ---
 
-## 10. Causal Forest Output (v4)
+## 11. Causal Forest Output (v4)
 
 **File**: `results/causal_forest_cate.csv`
 
@@ -119,7 +148,57 @@ This dataset has been augmented to support High-Dimensional Causal Inference. It
 
 ---
 
-## 11. Key WDI Indicator Codes
+## 12. Enhanced Analysis Results (v5)
+
+### 12.1 Sensitivity Analysis
+**File**: `results/sensitivity_analysis.csv`
+
+Oster (2019) sensitivity analysis results:
+
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| Representative Delta | 1.01 | Omitted variables must be 1.01x as important as observed controls to explain away the result |
+| IV Coefficient | -273.71 | Consistent with main analysis |
+| R² (Controlled) | 0.78 | Model explains 78% of variance |
+
+**Status**: δ > 1.0 indicates **moderate robustness** to omitted variable bias.
+
+### 12.2 DragonNet Comparison
+**File**: `results/dragonnet_comparison.csv`
+
+Comparison of causal inference methods:
+
+| Method | ATE | R²_Y | Key Advantage |
+|--------|-----|------|---------------|
+| DragonNet | -1.95 | 0.989 | Superior prediction (MSE=0.20) |
+| CausalForestDML | -3.29 | - | Standard errors & CIs |
+| LinearDML | -2.51 | - | Baseline linear model |
+
+### 12.3 Feature Engineering Comparison
+**File**: `results/feature_comparison.csv`
+
+Baseline vs. enhanced model comparison:
+
+| Metric | Baseline | Enhanced | Change |
+|--------|----------|----------|--------|
+| CATE Mean | -1.30 | -1.39 | Better alignment with IV |
+| CATE Std | 0.90 | 2.97 | Captures more heterogeneity |
+| Features | 6 | 15 | +9 engineered features |
+
+### 12.4 Enhanced Visualizations
+**Directory**: `results/figures/enhanced/`
+
+Publication-ready figures following Nature/Science standards:
+- `divide_plot_gdp_enhanced.png/pdf`: With confidence interval bands
+- `gate_plot_enhanced.png/pdf`: Enhanced with error bars
+- `gate_heatmap_*_enhanced.png/pdf` (3 files): Multidimensional heterogeneity
+- `linear_vs_forest_enhanced.png/pdf`: With significance markers
+- `mechanism_renewable_curve_enhanced.png/pdf`: Contour + bar chart
+- `placebo_distribution_enhanced.png/pdf`: Optimized density curve
+
+---
+
+## 13. Key WDI Indicator Codes
 
 | Indicator | WDI Code | Notes |
 | :--- | :--- | :--- |

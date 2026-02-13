@@ -1,0 +1,58 @@
+{
+  "current": {
+    "countries": 40,
+    "country_list": [
+      "ARG",
+      "AUS",
+      "AUT",
+      "BEL",
+      "BGD",
+      "BRA",
+      "CAN",
+      "CHE",
+      "CHN",
+      "COL",
+      "DEU",
+      "DNK",
+      "EGY",
+      "ESP",
+      "FIN",
+      "FRA",
+      "GBR",
+      "IDN",
+      "IND",
+      "IRL",
+      "ITA",
+      "JPN",
+      "KOR",
+      "MEX",
+      "MYS",
+      "NGA",
+      "NLD",
+      "NOR",
+      "NZL",
+      "PAK",
+      "PER",
+      "PHL",
+      "RUS",
+      "SAU",
+      "SWE",
+      "THA",
+      "TUR",
+      "USA",
+      "VNM",
+      "ZAF"
+    ],
+    "year_range": "2000-2023",
+    "total_observations": 960
+  },
+  "wdi_raw": {
+    "countries": 40,
+    "year_range": "2000-2023"
+  },
+  "potential_additions": {
+    "additional_countries": 0,
+    "country_list": [],
+    "earlier_years": []
+  }
+}

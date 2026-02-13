@@ -123,6 +123,109 @@ controls_W:
   - Govt_expenditure_education_pct_GDP
   - Current_health_expenditure_pct_GDP
   - OECD
+# =============================================================================
+# Enhanced Features (v5)
+# =============================================================================
+
+enhanced_features:
+  # Core DCI (computed via PCA)
+  DCI:
+    components:
+      - Internet_users
+      - Fixed_broadband_subscriptions
+      - Secure_servers
+    method: PCA
+    standardize: true
+    explained_variance_threshold: 0.70
+
+  # Non-linear terms
+  non_linear:
+    - name: DCI_squared
+      formula: DCI ** 2
+      description: Diminishing returns to digitalization
+
+    - name: log_GDP_per_capita
+      formula: log(GDP_per_capita_constant)
+      description: Log transformation of GDP per capita
+
+  # Interaction terms
+  interactions:
+    - name: DCI_x_Trade_Openness
+      variables: [DCI, Trade_openness]
+      description: Digital capacity × Trade openness
+
+    - name: DCI_x_Financial_Development
+      variables: [DCI, Domestic_credit_to_private_sector]
+      description: Digital capacity × Financial depth
+
+    - name: DCI_x_Education_Level
+      variables: [DCI, Tertiary_enrollment]
+      description: Digital capacity × Education level
+
+    - name: log_GDP_x_DCI_squared
+      variables: [log_GDP_per_capita, DCI_squared]
+      description: Income × Digitalization non-linearity
+
+  # Institutional categories (computed)
+  institutional:
+    quality_index:
+      components:
+        - Control_of_Corruption
+        - Rule_of_Law
+        - Political_Stability
+        - Government_Effectiveness
+        - Regulatory_Quality
+        - Voice_and_Accountability
+      method: mean
+      standardize: true
+
+    categories:
+      - name: High
+        threshold: 0.43  # top 33%
+        dummy: Institution_quality_high
+
+      - name: Medium
+        threshold: [-0.43, 0.43]  # middle 33%
+        dummy: Institution_quality_medium
+
+      - name: Low
+        threshold: -0.43  # bottom 33%
+        dummy: Institution_quality_low
+
+# =============================================================================
+# Sensitivity Analysis Configuration
+# =============================================================================
+
+sensitivity_analysis:
+  method: Oster_2019
+  parameters:
+    R2_max: 0.95
+    delta_grid: [0.5, 1.0, 1.5, 2.0]
+  interpretation:
+    delta_threshold: 1.0
+    robust_if: delta > 1.0
+
+# =============================================================================
+# Alternative Methods Comparison
+# =============================================================================
+
+methods_comparison:
+  primary: CausalForestDML
+  alternatives:
+    - DragonNet
+    - LinearDML
+    - OrthoIV
+  comparison_metrics:
+    - ATE
+    - ATE_SE
+    - CI_coverage
+    - R2_Y
+    - MSE_Y
+
+# =============================================================================
+# WDI Indicators
+# =============================================================================
+
 wdi_indicators:
   EN.ATM.CO2E.PC: CO2_per_capita
   BX.GSR.CCIS.ZS: EDS

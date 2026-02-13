@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: "The Digital Decarbonization Divide - Enhanced Research Package"
+message: "If you use this repository, please cite it. 如使用本项目，请按以下信息引用。"
+type: software
+version: 2.0.0
+date-released: 2026-02-13
+license: MIT
+authors:
+  - family-names: Cui
+    given-names: Qingsong
+    affiliation: "Independent Researcher"
+    email: "qingsongcui9857@gmail.com"
+repository-code: "https://github.com/a985783/digital-decarbonization-divide.git"
+abstract: >-
+  Reproducible research package for analyzing heterogeneous effects of digital
+  connectivity on carbon emissions across 40 economies (2000-2023), including
+  causal forest, IV, placebo, mechanism, external-validity, and policy modules.
+keywords:
+  - causal inference
+  - digitalization
+  - carbon emissions
+  - reproducibility
+  - climate economics

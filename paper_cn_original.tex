@@ -1,0 +1,514 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[hypertexnames=false]{hyperref}
+\usepackage{float}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{xeCJK}
+
+\setCJKmainfont{PingFang SC}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=blue,
+}
+
+\begin{document}
+
+%==============================================================================
+% Title Page
+%==============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Large \textbf{数字脱碳鸿沟：ICT对碳排放影响在社会经济能力上的非对称效应}}
+    
+    \vspace{1.5cm}
+    
+    \textbf{崔青松 (Qingsong Cui)} \\
+    独立研究员 \\
+    \href{mailto:qingsongcui9857@gmail.com}{qingsongcui9857@gmail.com}
+    
+    \vspace{1.5cm}
+    
+    \today
+    
+    \vspace{2cm}
+    
+    \begin{abstract}
+        \noindent 本研究利用因果森林（Causal Forest）框架（2,000棵树），在严格控制过拟合（诚实分裂 honest splitting、国家聚类交叉拟合）的前提下，基于40个经济体（2000-2023年，排除碳排放数据缺失后 N=840）的面板数据，揭示了数字化转型对气候影响存在显著的\textbf{非线性结构异质性}。我们提出了\textbf{“二维数字化”}框架，将\textbf{“国内数字能力 (DCI)”}与\textbf{“对外数字专业化 (EDS)”}解耦。基于森林模型的\textbf{“模型阶梯”}分析显示，线性模型将国内数字能力的脱碳潜力低估了约1.7倍。我们将关注点从点估计的显著性转向经由国家聚类自助法验证的\textbf{组平均处理效应 (GATEs)}。结果表明，中等收入经济体处于“甜蜜点 (Sweet Spot)”，在此处 DCI 驱动了大幅的碳减排；而高收入环境下的减排效应则较弱（但仍为负值）。这些发现提供了线性模型所遗漏的高分辨率政策图谱。
+    \end{abstract}
+    
+    \vspace{1cm}
+    
+    \noindent\textbf{关键词：} 因果森林，双重机器学习，异质性处理效应，社会经济能力，经济发展，制度质量
+    
+    \vspace{0.5cm}
+    
+    \noindent\textbf{JEL分类码：} C14, C23, O33, Q56
+    
+\end{titlepage}
+
+\newpage
+\onehalfspacing
+\setlength{\emergencystretch}{2em}
+
+%==============================================================================
+\section{引言}
+%==============================================================================
+
+数字经济推动环境可持续性的潜力是一个备受争议的话题。虽然数字化提供了去物质化和提效的路径，但也带来了数据中心、网络基础设施和电子设备日益增长的能源足迹 \citep{Lange2020}。以往的实证研究结果并不一致，往往受到样本量小、遗漏变量偏差和线性函数形式假设的限制 \citep{Salahuddin2016}。
+
+\textbf{本文提出了一个新的结构性视角：“二维数字化”。} 我们认为，以往的矛盾源于混淆了\textit{国内数字能力 (DCI)}——使用绿色技术的基础设施——与\textit{对外数字专业化 (EDS)}——在全球价值链中的贸易角色。我们的核心观点是，虽然 DCI 驱动脱碳（并在中等收入经济体达到“甜蜜点”），但富裕国家的高 EDS 可能会削弱减排效果。
+
+\subsection{相关文献}
+
+关于环境库兹涅茨曲线 (EKC) 的近期研究持续争论碳排放的结构性驱动因素。尽管部分研究验证了收入与排放的倒U型关系 \citep{Stern2004, Dinda2004, Panayotou1997, Arrow1995, Grossman1995}，其他学者强调了贸易开放和碳泄漏的作用 \citep{Copeland2004, Levinson2008, Moyer2014, Cole2004}。与此同时，数字经济的环境影响仍无定论。乐观者指出效率提升和去物质化潜力 \citep{Brynjolfsson2014, Jorgenson2016, Roller2001, Varian2014}，而怀疑者则强调 ICT 基础设施的能源足迹及反弹效应 \citep{Hilty2015, Coroama2012, Lange2020, Gossart2015, Sadorsky2012, York2003}。
+
+从方法学角度看，传统的面板数据估计 \citep{Wooldridge2005, Arellano1991} 往往难以处理复杂的异质性和弱识别问题 \citep{Stock2005, AndersonRubin1949}。因果机器学习的最新进展提供了强有力的替代方案 \citep{Breiman2001, Athey2016, Athey2019, Wager2018, Chernozhukov2018, Nie2021, Mullainathan2017, Athey2017}。本文通过将严格的因果推断框架 \citep{Imbens2021, Abadie2018} 应用于数字脱碳关系，并考虑制度和结构中介因素 \citep{Acemoglu2005, Galor2011, Herrendorf2014, Baron1986, Imai2010}，从而连接了这些文献流。本文通过采用因果森林 DML \citep{Athey2019, Wager2018} 填补了这一线性假设的空白。
+
+\subsection{研究假设}
+
+基于上述理论框架，我们提出五个可检验的假设：
+
+\begin{enumerate}
+    \item \textbf{H1（国内数字能力）：} 在控制收入和制度质量后，更高的 DCI 与更低的人均 CO$_2$ 排放相关。
+    
+    \item \textbf{H2（非线性异质性）：} DCI 对排放的影响在不同社会经济环境中呈非线性变化，在中等收入经济体中效应最强。
+    
+    \item \textbf{H3（制度调节）：} DCI 的减排效应在制度质量较高的国家更强。
+    
+    \item \textbf{H4（收益递减）：} 在能源系统已较清洁的国家，DCI 的边际减排效应较弱。
+    
+    \item \textbf{H5（对外专业化）：} 高对外数字专业化 (EDS) 与较弱的 DCI 驱动减排相关。
+\end{enumerate}
+
+这些假设通过因果森林估计（H1、H2）、交互分析（H3、H4）和 GATE 比较（H5）进行检验。
+
+\subsection{因果森林的必要性}
+
+如果线性交互模型已足够，为什么要使用机器学习这门“大炮”？我们证明，线性模型虽然能够检测到异质性的\textit{方向}，但无法：
+\begin{enumerate}
+    \item \textbf{识别阈值：} 检测政策有效性发生逆转的非线性转折点。
+    \item \textbf{映射非对角线例外：} 捕捉那些违背总体趋势的国家（例如，减排效果较弱的高收入国家）。
+    \item \textbf{提供严谨的政策图谱：} 生成经得起高维混淆因素检验的决策相关分层（GATEs）。
+\end{enumerate}
+
+我们通过\textbf{“模型阶梯”}比较确立了这一必要性，展示了线性近似在何处以及为何失效。
+
+\subsection{贡献}
+
+本研究在三个方面推进了现有文献：
+
+\begin{enumerate}
+    \item \textbf{发现“二维数字脱碳鸿沟”：} 我们解耦了国内能力 (DCI) 和对外专业化 (EDS) 的效应。我们发现 DCI 显著减少排放（每标准差 -1.73吨/人），但这并非线性的，在特定的高 EDS 环境下减排效果较弱。
+    
+    \item \textbf{因果森林方法论：} 我们实施了包含 2,000 棵树、XGBoost 第一阶段模型和适当推断区间的 CausalForestDML——这是对线性 DML 的重大方法学升级。
+    
+    \item \textbf{政策相关的异质性：} 我们的结果识别了哪些国家受益于数字脱碳，哪些国家显示出较弱的减排效果，从而实现了针对性的政策建议。
+\end{enumerate}
+
+\subsection{主要发现}
+
+我们的因果森林分析揭示：
+
+\begin{table}[H]
+\centering
+\caption{主要发现摘要}
+\begin{tabular}{ll}
+\toprule
+发现 & 数值 \\
+\midrule
+因果森林 ATE (DCI) & $-1.73$ 公吨/人 (每标准差) \\
+\textbf{IV 估计值 (OrthoIV)} & \textbf{$-1.91$} 公吨/人 (95\% CI: $[-2.37, -1.46]$) \\
+安慰剂检验 ($N=100$) & 伪 $p < 0.001$ (信噪比 $\sim 23\times$) \\
+描述性诊断: $\tau(x)$ vs GDP & $r = -0.16$ \\
+描述性诊断: $\tau(x)$ vs Institution & $r = -0.09$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+本文其余部分安排如下：第二部分描述数据。第三部分介绍方法论。第四部分报告结果。第五部分讨论启示。第六部分总结。
+
+%==============================================================================
+\section{数据与样本构建}
+%==============================================================================
+
+\subsection{数据来源}
+
+我们从两个世界银行数据库获取数据：世界发展指标 (WDI) 和全球治理指标 (WGI)。WDI 提供了 60 个经济、社会和环境变量，而 WGI 提供了制度质量的六个维度。
+
+\subsection{样本选择}
+
+我们的样本包含 2000 年至 2023 年间观测到的 40 个主要经济体（20 个 OECD，20 个非 OECD）。我们仅对控制变量和调节变量采用折叠安全 MICE（多重插补链式方程），在训练折叠内拟合以避免泄露；结果变量和处理变量从未被插补。此过程产生：
+\begin{itemize}
+    \item 40 个国家，24 年的面板数据。
+    \item 排除缺失 CO$_2$ 结果后的分析样本 $N = 840$。
+\end{itemize}
+
+\noindent 我们有意专注于 40 个主要经济体，以确保用于 DCI 构建的服务器相关指标具有\textbf{高测量可靠性}。将覆盖范围扩大到较小的经济体将大幅增加安全服务器序列中的测量噪声，可能会降低基于 PCA 的能力测量的质量。因此，我们将对较小经济体的外部有效性作为局限性进行讨论。
+
+\subsection{变量}
+
+\begin{table}[H]
+\centering
+\caption{变量定义}
+\label{tab:variables}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2cm}}
+\toprule
+变量 & 定义 & 来源 \\
+\midrule
+\multicolumn{3}{l}{\textbf{核心变量}} \\
+CO$_2$ 排放 & 人均（公吨） & WDI \\
+\textbf{国内数字能力 (DCI)} & PCA 指数（互联网，固定宽带，安全服务器） & WDI (折叠安全 MICE) \\
+\textbf{对外数字专业化 (EDS)} & ICT 服务出口（占服务出口的百分比） & WDI \\
+\multicolumn{3}{l}{\textbf{制度质量 (WGI)}} \\
+腐败控制 & 公权力谋取私利的感知 & WGI \\
+法治 & 对社会规则的信心 & WGI \\
+政府效率 & 公共服务的质量 & WGI \\
+监管质量 & 私营部门发展能力 & WGI \\
+\multicolumn{3}{l}{\textbf{控制变量 (共 57 个)}} \\
+人均 GDP & 2015 年不变价格美元 & WDI \\
+能源使用 & 人均油当量千克 & WDI \\
+可再生能源 & 占总能源消耗的百分比 & WDI \\
+城市人口 & 占总人口的百分比 & WDI \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{描述性统计}
+
+\begin{table}[H]
+\centering
+\caption{描述性统计 ($N = 840$)}
+\label{tab:desc}
+\begin{tabular}{lrrrr}
+\toprule
+变量 & 均值 & 标准差 & 最小值 & 最大值 \\
+\midrule
+CO$_2$ 排放 (公吨/人) & 4.61 & 4.45 & 0.04 & 21.87 \\
+EDS (ICT 服务出口, \%) & 8.67 & 9.08 & 0.42 & 52.09 \\
+腐败控制 & 0.58 & 1.15 & $-1.60$ & 2.46 \\
+人均 GDP (美元) & 24,979 & 22,788 & 394 & 103,554 \\
+可再生能源 (\%) & 21.84 & 18.54 & 0.00 & 88.10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textit{注：DCI 是由互联网用户、固定宽带订阅和与安全服务器通过 PCA 构建的综合指数（均值=0，标准差=1）（来源：WDI 结合折叠安全 MICE，作者计算）。EDS 代表国家在 ICT 服务方面的出口专业化。}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{results/figures/pca_scree_plot.png}
+\caption{DCI指数的Scree图：验证单一主成分结构}
+\label{fig:scree}
+\end{figure}
+
+%==============================================================================
+\section{方法论}
+%==============================================================================
+
+\subsection{从线性 DML 到因果森林}
+
+传统的双重机器学习 \citep{Chernozhukov2018} 估计的是\textit{平均}处理效应 $\theta$。然而，这种方法掩盖了异质性。\textbf{因果森林 DML} \citep{Athey2019} 扩展了这一框架以估计特定观测的效应：
+
+\begin{equation}
+\tau(x) = \mathbb{E}[Y(1) - Y(0) | X = x]
+\end{equation}
+
+其中 $\tau(x)$ 是具有特征 $x$ 的观测的条件平均处理效应 (CATE)。
+
+\subsection{因果森林实施}
+
+我们实施 CausalForestDML \citep{Athey2019}，严格分离变量以避免过拟合：
+
+\begin{enumerate}
+    \item \textbf{调节变量 (X):} 一组简约的六个理论异质性驱动因素：\textbf{人均 GDP，EDS，腐败控制，能源使用，可再生能源占比，城市人口}。\textit{（互联网用户、固定宽带和安全服务器仅作为 DCI 组件使用，因此排除在 X 和 W 之外，以避免“坏控制”问题。）}
+    \item \textbf{控制变量 (W):} 一个高维向量（50+ 变量）以捕捉混淆因素。
+\end{enumerate}
+
+严谨性配置：
+\begin{itemize}
+    \item n\_estimators: 2,000 棵树
+    \item 分裂: 诚实 (Honest)（分离训练和估计样本）
+    \item 交叉拟合: GroupKFold (按国家) 以防止时间泄露
+    \item 推断: 聚类自助法 (Cluster Bootstrap) (重采样国家)
+\end{itemize}
+
+\subsection{严谨的推断策略}
+
+我们不依赖未调整的逐点置信区间，而是专注于\textbf{组平均处理效应 (GATEs)}。我们将样本按调节变量四分位数（例如 GDP）分层，并计算每个层内的 ATE。使用\textbf{国家聚类自助法 ($B=1000$)}量化不确定性，有放回地重采样国家以构建考虑国内依赖性的 95\% 置信区间。
+
+\subsection{模型阶梯}
+
+为了证明模型选择的合理性，我们比较四种规格：
+\begin{enumerate}
+    \item \textbf{L0 (基线):} 双向固定效应。
+    \item \textbf{L1 (线性 DML):} 具有高维控制的全局 ATE。
+    \item \textbf{L2 (交互 DML):} 允许 GDP 线性调节的线性 DML。
+    \item \textbf{L3 (因果森林):} 完全非线性异质性。
+\end{enumerate}
+
+%==============================================================================
+\section{实证结果}
+%==============================================================================
+
+\subsection{异质性验证 (第一阶段)}
+
+在运行完整的因果森林之前，我们使用交互项模型验证异质性的存在：
+
+\begin{equation}
+Y = \beta_1 T + \beta_2 (T \times M) + g(W) + \epsilon
+\end{equation}
+
+其中 $M$ 是 log(人均 GDP)。我们也测试制度质量作为调节变量。
+
+\begin{table}[H]
+\centering
+\caption{交互项结果}
+\begin{tabular}{lllccc}
+\toprule
+调节变量 & 系数 & 估计值 & 标准误 & $p$值 \\
+\midrule
+log(GDP) & 主效应 (DCI) & $-3.365$ & 0.201 & $<0.001$ \\
+log(GDP) & 交互项 (DCI $\times$ log(GDP)) & $-0.126$ & 0.128 & 0.326 \\
+制度 & 主效应 (DCI) & $-1.376$ & 0.258 & $<0.001$ \\
+制度 & 交互项 (DCI $\times$ 制度) & \textbf{0.765} & 0.190 & \textbf{$<0.001$} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+GDP 交互项在统计上不显著 ($p = 0.326$)。制度质量交互项\textbf{统计显著} ($p < 0.001$)。
+
+\subsection{模型阶梯：为什么非线性很重要}
+
+我们跨越四个日益灵活的规格估计处理效应，以展示因果森林方法的必要性。
+
+\begin{table}[H]
+\centering
+\small
+\caption{模型阶梯比较 (DCI 效应, B=1000)}
+\label{tab:ladder}
+\begin{tabularx}{\linewidth}{l l c c >{\raggedright\arraybackslash}X}
+\toprule
+模型 & ATE 估计 (每 SD) & SE & 95\% CI & \shortstack{捕捉到的\\异质性?} \\
+\midrule
+\textbf{L0} (TWFE) & $-2.810$ & 0.463 & $[-3.727, -1.844]$ & 无 \\
+\textbf{L1} (线性 DML) & $-0.990$ & 0.436 & $[-2.070, -0.367]$ & 无 \\
+\textbf{L2} (交互) & $-1.216$ & 0.393 & $[-2.031, -0.460]$ & 仅线性 \\
+\textbf{L3} (\textbf{因果森林}) & \textbf{$-1.730$} & \textbf{0.588} & \textbf{$[-2.882, -0.578]$} & \textbf{复杂} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent\textbf{核心洞察：} 线性模型系统性地低估了国内能力的脱碳潜力（发现约为 -0.99 吨/SD）。因果森林通过正确识别线性平均平滑掉的高影响“甜蜜点”，揭示了\textbf{更大的效应}（-1.73 吨/SD）。
+
+\noindent\textit{注：模型阶梯使用滞后 DCI ($DCI_{t-1}$)，有效样本 $N=800$。}
+
+\subsection{组平均处理效应 (GATEs)}
+
+我们不依赖特定的点估计，而是报告按 GDP 四分位数分层的 GATEs，95\% 置信区间源自\textbf{聚类自助法}。
+
+\begin{table}[H]
+\centering
+\caption{GATE 结果 (DCI 效应, B=1000)}
+\label{tab:gate}
+\begin{tabular}{lcll}
+\toprule
+GDP 组别 & 估计值 (每 SD) & 95\% CI & 解读 \\
+\midrule
+\textbf{低收入} & \textbf{$-1.19$} & $[-1.47, -0.99]$ & 有效 \\
+\textbf{中低收入} & \textbf{$-2.17$} & $[-2.66, -1.76]$ & \textbf{甜蜜点} \\
+\textbf{中高收入} & \textbf{$-2.29$} & $[-2.65, -1.85]$ & \textbf{甜蜜点} \\
+\textbf{高收入} & \textbf{$-1.26$} & $[-1.67, -0.81]$ & 效应较弱 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+这种转变揭示了中等收入经济体中的一个\textbf{“甜蜜点”}，其中国内数字能力带来了最大的碳减排。在高收入经济体中，效应虽然减弱但仍为负值。
+
+\subsubsection{稳健性：安慰剂、LOCO 与 IV}
+\begin{itemize}
+    \item \textbf{工具变量分析：} 为了解决内生性问题，我们在双重机器学习框架下采用工具变量策略（OrthoIV），使用滞后 DCI ($DCI_{t-1}$) 作为工具变量。IV 估计值为 \textbf{$-1.91$} (95\% CI: $[-2.37, -1.46]$)，强于原始估计值 ($-1.54$)，这表明测量误差或同步性可能导致 OLS 估计值存在向零偏置（衰减偏误）。
+    \item \textbf{安慰剂检验：} 置换处理产生的 CATE SD 为 \textbf{0.041}（对比真实 SD \textbf{0.952}），意味着信噪比约为 $23\times$。真实 ATE 远在 100 次安慰剂运行的分布之外（伪 $p < 0.001$）。
+    \item \textbf{LOCO 稳定性：} 留一国家分析确认了稳健性。全局 ATE 在每个折叠中都保持显著（范围：$-2.33$ 到 $-0.67$），证明结果并非由任何单一异常值驱动。
+\end{itemize}
+
+\subsubsection{政策例外（最弱减排）}
+正确测量国内能力 (DCI) 显示出一致的负向国家平均效应，但在幅度上存在有意义的变化。最弱的减排出现在一小部分高收入国家。
+
+\begin{table}[H]
+\centering
+\caption{政策例外（最弱减排）}
+\label{tab:exceptions}
+\begin{tabular}{lcccl}
+\toprule
+国家 & 森林 CATE (DCI) & 95\% CI & 判定 \\
+\midrule
+\textbf{芬兰 (FIN)} & $-0.19$ & $[-0.39, -0.07]$ & 最弱减排 \\
+\textbf{瑞典 (SWE)} & $-0.46$ & $[-0.60, -0.30]$ & 弱减排 \\
+\textbf{瑞士 (CHE)} & $-0.50$ & $[-0.57, -0.44]$ & 弱减排 \\
+\textbf{加拿大 (CAN)} & $-0.52$ & $[-0.62, -0.44]$ & 弱减排 \\
+\textbf{越南 (VNM)} & $-0.90$ & $[-1.01, -0.82]$ & 中等减排 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{异质性来源}
+
+\begin{table}[H]
+\centering
+\caption{CATE 与调节变量的相关性}
+\begin{tabular}{lcl}
+\toprule
+调节变量 & 相关性 (r) & 解读 \\
+\midrule
+人均 GDP (log) & $-0.33$ & 更高的 GDP $\to$ 更强的减排 \\
+人均能源使用 & $-0.64$ & \textbf{最强预测因子} \\
+腐败控制 & $-0.09$ & 弱正向一致性 \\
+可再生能源 \% & $+0.56$ & 更高的可再生能源 $\to$ 更弱的减排 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\textit{注：相关性是在估计的 CATEs 和调节变量之间计算的。与可再生能源的正相关证实了“收益递减”假说：在已经清洁的电网中，数字化能效提升转化成的边际减排空间较小。}
+
+\subsection{可视化鸿沟}
+
+\subsubsection{图 1：为何线性模型失效}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{results/figures/linear_vs_forest.png}
+\caption{面板 A 比较了线性交互模型（虚线）与灵活的因果森林估计（实线）。森林检测到了线性模型平滑掉的非线性阈值效应。}
+\label{fig:linear_vs_forest}
+\end{figure}
+
+\subsubsection{图 2：非对角线分析}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{results/figures/off_diagonal_cis.png}
+\caption{面板 B 识别了“政策例外”——森林预测偏离线性预测的国家。最弱的减排集中在一小部分高收入国家。}
+\label{fig:off_diagonal}
+\end{figure}
+
+\subsubsection{图 3：组平均处理效应 (GATEs)}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{results/figures/gate_plot.png}
+\caption{具有 95\% 聚类自助法置信区间的组平均处理效应。在低收入环境中效应为中度负值，在中等收入环境中为强负值。}
+\label{fig:gate}
+\end{figure}
+
+\subsubsection{图 4：机制分析 - 可再生能源悖论}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{results/figures/mechanism_renewable_curve.png}
+\caption{可再生能源占比与 DCI 效应之间的非线性关系。随着可再生能源比例的增加，DCI 的碳减排效应减弱（向零移动），支持了在清洁电网中数字效率节省碳排放较少的假设。}
+\label{fig:mechanism}
+\end{figure}
+
+%==============================================================================
+\section{讨论}
+%==============================================================================
+
+\subsection{数字脱碳鸿沟}
+
+我们的结果揭示了依赖于社会经济能力的根本异质性。“数字脱碳鸿沟”体现在三个维度：
+
+\begin{enumerate}
+    \item \textbf{发展鸿沟（带例外）：} 富裕国家\textit{通常}从国内数字能力中获益更多（GATEs 确认了最高四分位数的强减排），但有一子集（如芬兰、瑞典、瑞士、加拿大）表现出明显较弱的减排。
+    \item \textbf{EDS 一致性：} 较高的 EDS 与较弱的减排相关（正相关），表明出口结构可能会抑制国内效率收益，但不会逆转它。
+    \item \textbf{能源结构鸿沟：} 违反直觉的是，可再生能源份额\textit{较低}的国家看到了更强的 DCI 驱动的减排。这支持了“边际减排成本”逻辑：在基准能源结构较脏的情况下，数字化优化产生的碳回报更高。
+\end{enumerate}
+
+\subsection{机制解释}
+
+我们提出两个非互斥的机制：
+
+\textbf{赋能条件假说}：强大的制度使有效的环境监管成为可能，确保 ICT 带来的效率收益转化为减排，而不是收益递减。
+
+\textbf{结构转型假说}：富裕经济体的 ICT 发展代表了向以服务为基础、知识密集型生产的转变，这种生产本质上碳密集度较低。
+
+\subsection{政策启示}
+
+\textbf{对发达经济体：}
+\begin{quote}
+总体趋势表明\textbf{国内数字能力 (DCI)}可以成为减排杠杆。然而，\textbf{高 EDS 结构性例外}表明，在特定的服务出口密集型环境中，效率收益可能较弱。因此，政策应以针对\textbf{绝对脱钩}的措施来补充数字投资。
+\end{quote}
+
+\textbf{对发展中经济体：}
+\begin{quote}
+\textbf{政策考量：} 证据表明，单纯的数字化转型在低能力环境下可能无法驱动脱碳。能力建设方面的补充努力至关重要。
+\end{quote}
+
+\textbf{对国际组织：} 将数字发展援助作为更广泛的\textbf{能力建设}方案的一部分。
+
+\subsection{局限性}
+
+我们承认以下几个局限性，这些局限性应指导对研究结果的解释：
+
+\begin{enumerate}
+    \item \textbf{样本规模与统计功效：} 我们的分析使用了 40 个国家（840 个国家-年份观测），虽然覆盖了全球 GDP 和排放的 90\%，但对于因果森林估计而言，独立聚类数量相对较少。尽管我们的自助法收敛诊断和留一国家分析表明估计稳定，但读者应将结果解释为\textit{初步证据}而非确定性发现。图 \ref{fig:power} 展示了基于我们样本特征的蒙特卡洛功效模拟结果。
+    
+    \item \textbf{测量：} 虽然 \textbf{DCI}（互联网使用、宽带接入和安全服务器的 PCA）捕捉了基于基础设施的国内数字能力，但它可能无法完全捕捉\textbf{数字使用的质量}（例如，AI 采用强度、数据中心效率、行业数字深化）。我们的 PCA 诊断显示第一主成分解释了约 70\% 的方差。\textbf{EDS} 捕捉的是对外专业化，不应被解释为国内采用的代理变量。
+    
+    \item \textbf{因果解释：} 尽管使用了 DML 框架和 IV 策略，但未观测到的混淆因素可能仍然存在。我们滞后 DCI 工具变量的排除性限制在理论上是有依据的，但无法通过实证验证。我们使用更长滞后期的安慰剂 IV 测试提供了间接支持。
+    
+    \item \textbf{动态效应：} 我们的主要分析聚焦于同期效应。虽然初步的动态分析表明效应在 2-3 年内持续存在，但对长期动态的更全面研究将加强研究发现。
+    
+    \item \textbf{外部有效性：} 研究结果可能无法推广到未纳入样本的较小经济体、岛国或最不发达国家。
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{results/figures/power_simulation_distribution.png}
+\caption{蒙特卡洛功效分析 (B=100)：ATE估计分布与真值覆盖}
+\label{fig:power}
+\end{figure}
+
+%==============================================================================
+\section{结论}
+%==============================================================================
+
+本文引入了“数字脱碳鸿沟”的概念，并为其存在提供了严谨的实证证据。使用因果森林 DML 对 40 个经济体（排除缺失 CO$_2$ 结果后 $N=840$）的面板进行分析，我们发现：
+
+\begin{enumerate}
+    \item \textbf{国内数字能力 (DCI)} 对 CO$_2$ 排放表现出根本性的非线性效应。
+    \item \textbf{GATEs} 揭示了从低能力经济体近乎零的效应到高能力经济体强减排的清晰递进。
+    \item \textbf{存在结构性例外：} “非对角线”案例表明，\textbf{高对外数字专业化 (EDS)} 可以抑制国内效率收益。
+    \item \textbf{模型阶梯}证明，无论是捕捉政策相关的阈值还是线性模型遗漏的例外，灵活的估计都是必需的。
+\end{enumerate}
+
+我们的发现挑战了数字化转型对气候目标普遍有益的假设。相反，我们识别了\textbf{条件先决条件}——社会经济能力——这似乎调节了 ICT 是否能带来“绿色红利”。
+
+%==============================================================================
+\section*{声明}
+%==============================================================================
+
+\textbf{资助}：本研究未获得公共、商业或非营利部门资助机构的任何具体资助。
+
+\textbf{利益冲突}：作者声明没有利益冲突。
+
+%==============================================================================
+\section*{数据和代码可用性}
+%==============================================================================
+
+本文的复现代码及数据构建脚本已在 GitHub 公开，链接为：\url{https://github.com/a985783/digital-decarbonization-divide.git}。所有原始数据均来自 WDI/WGI。
+
+%==============================================================================
+\bibliographystyle{apalike}
+\bibliography{references}
+
+
+
+\end{document}

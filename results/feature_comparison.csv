@@ -1,0 +1,17 @@
+metric,value
+baseline_cate_mean,-1.3039985813101067
+baseline_cate_std,0.904901312268946
+baseline_cate_min,-4.600222354884101
+baseline_cate_max,-0.1127617446388875
+baseline_num_features,6
+baseline_valid_obs,840
+enhanced_cate_mean,-1.3878354743126484
+enhanced_cate_std,2.968496463923043
+enhanced_cate_min,-15.748865995956278
+enhanced_cate_max,1.3189846914610355
+enhanced_num_features,15
+enhanced_valid_obs,840
+diff_cate_mean_diff,-0.08383689300254171
+diff_cate_std_diff,2.063595151654097
+diff_feature_increase,9
+enhanced_features_list,"DCI_x_Trade_Openness, DCI_x_Financial_Development, DCI_x_Education_Level, log_GDP_x_DCI_squared, DCI_squared, log_GDP_per_capita, Institution_quality_high, Institution_quality_medium, Institution_quality_low"

@@ -19,14 +19,10 @@ Weak IV Test: First-stage F-statistic > 10 (Staiger & Stock, 1997)
 import pandas as pd
 import numpy as np
 import os
-import warnings
 from sklearn.model_selection import GroupKFold
-from sklearn.linear_model import LassoCV, ElasticNetCV, LinearRegression
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from scipy import stats
-
-# Suppress warnings
-warnings.filterwarnings('ignore')
 
 from scripts.analysis_config import load_config
 from scripts.analysis_data import prepare_analysis_data
@@ -51,7 +47,7 @@ def first_stage_f_statistic(T, Z, W, groups):
     H0: Instrument is weak (first-stage coefficient = 0)
     Critical value: F > 10 (Staiger & Stock, 1997)
     """
-    from sklearn.model_selection import cross_val_predict
+    from sklearn.model_selection import KFold, cross_val_predict
     
     # Center variables
     T_centered = T - np.mean(T)
@@ -61,15 +57,35 @@ def first_stage_f_statistic(T, Z, W, groups):
     X_first_stage = np.column_stack([Z_centered, W])
     
     model = LinearRegression()
-    t_pred = cross_val_predict(model, X_first_stage, T_centered, cv=5)
+
+    cv = 5
+    cv_kwargs = {}
+    if groups is not None:
+        unique_groups = np.unique(groups)
+        if len(unique_groups) >= 2:
+            n_splits = min(5, len(unique_groups))
+            cv = GroupKFold(n_splits=n_splits)
+            cv_kwargs["groups"] = groups
+        else:
+            cv = KFold(n_splits=2, shuffle=False)
+
+    t_pred = cross_val_predict(model, X_first_stage, T_centered, cv=cv, **cv_kwargs)
     
     # Calculate R²
     r2 = r2_score(T_centered, t_pred)
+    r2 = max(r2, 0.0)
     
     # F-statistic approximation
     n = len(T)
-    k = X_first_stage.shape[1]
-    f_stat = (r2 / (1 - r2)) * ((n - k - 1) / k)
+    k = np.atleast_2d(Z_centered).shape[1]
+    denom_df = n - X_first_stage.shape[1] - 1
+
+    if k <= 0 or denom_df <= 0:
+        return np.nan, r2
+    if r2 >= 1.0:
+        r2 = 1.0 - 1e-12
+
+    f_stat = (r2 / (1 - r2)) * (denom_df / k)
     
     return f_stat, r2
 
@@ -90,60 +106,71 @@ def anderson_rubin_ci(Y, T, Z, W, alpha=0.05):
     ar_pval : float
         p-value for AR test of beta=0
     """
+    Y = np.asarray(Y, dtype=float).reshape(-1)
+    T = np.asarray(T, dtype=float).reshape(-1)
+    Z = np.asarray(Z, dtype=float).reshape(-1, 1)
+    W = np.asarray(W, dtype=float)
+    if W.ndim == 1:
+        W = W.reshape(-1, 1)
+
     n = len(Y)
-    
-    # Grid search for AR CI
-    beta_grid = np.linspace(-5, 2, 500)
-    ar_stats = []
-    
-    for beta in beta_grid:
-        # Reduced form residual under H0: beta = beta_0
+
+    X_u = np.column_stack([np.ones(n), Z, W])
+    X_r = np.column_stack([np.ones(n), W])
+
+    rank_u = np.linalg.matrix_rank(X_u)
+    rank_r = np.linalg.matrix_rank(X_r)
+    df_num = rank_u - rank_r
+    df_den = n - rank_u
+
+    if df_num <= 0 or df_den <= 0:
+        return np.nan, np.nan, np.nan, np.nan
+
+    def _ar_f_stat(beta):
         resid = Y - beta * T
-        
-        # Regress residual on Z and W
-        X_ar = np.column_stack([Z, W])
-        model = LinearRegression()
-        model.fit(X_ar, resid)
-        resid_fitted = model.predict(X_ar)
-        
-        # AR statistic (Wald-type test on Z coefficient)
-        ssr_restricted = np.sum((resid - np.mean(resid))**2)
-        ssr_unrestricted = np.sum((resid - resid_fitted)**2)
-        
-        k = 1  # number of instruments
-        ar_stat = ((ssr_restricted - ssr_unrestricted) / k) / (ssr_unrestricted / (n - X_ar.shape[1]))
-        ar_stats.append(ar_stat)
-    
-    ar_stats = np.array(ar_stats)
-    
-    # Critical value (chi-squared with 1 df, divided by 1)
-    critical_value = stats.chi2.ppf(1 - alpha, df=1)
-    
-    # Find CI bounds (values where AR stat < critical value)
-    in_ci = ar_stats < critical_value
-    
+
+        coef_u, _, _, _ = np.linalg.lstsq(X_u, resid, rcond=None)
+        resid_u = resid - X_u @ coef_u
+        ssr_u = float(np.dot(resid_u, resid_u))
+
+        coef_r, _, _, _ = np.linalg.lstsq(X_r, resid, rcond=None)
+        resid_r = resid - X_r @ coef_r
+        ssr_r = float(np.dot(resid_r, resid_r))
+
+        if ssr_u <= 0:
+            return np.nan
+
+        stat = ((ssr_r - ssr_u) / df_num) / (ssr_u / df_den)
+        return max(stat, 0.0)
+
+    beta_grid = np.linspace(-20.0, 10.0, 3001)
+    ar_stats = np.array([_ar_f_stat(beta) for beta in beta_grid], dtype=float)
+
+    critical_value = stats.f.ppf(1 - alpha, df_num, df_den)
+    valid_mask = np.isfinite(ar_stats)
+    in_ci = valid_mask & (ar_stats <= critical_value)
+
     if in_ci.any():
         ci_indices = np.where(in_ci)[0]
-        ar_ci_lower = beta_grid[ci_indices[0]]
-        ar_ci_upper = beta_grid[ci_indices[-1]]
+        ar_ci_lower = float(beta_grid[ci_indices[0]])
+        ar_ci_upper = float(beta_grid[ci_indices[-1]])
     else:
-        # If no values in CI, return NaN
-        ar_ci_lower = np.nan
-        ar_ci_upper = np.nan
-    
-    # AR test at beta=0
-    resid_0 = Y
-    X_ar = np.column_stack([Z, W])
-    model = LinearRegression()
-    model.fit(X_ar, resid_0)
-    resid_fitted_0 = model.predict(X_ar)
-    
-    ssr_restricted_0 = np.sum((resid_0 - np.mean(resid_0))**2)
-    ssr_unrestricted_0 = np.sum((resid_0 - resid_fitted_0)**2)
-    
-    ar_stat_0 = ((ssr_restricted_0 - ssr_unrestricted_0) / 1) / (ssr_unrestricted_0 / (n - X_ar.shape[1]))
-    ar_pval = 1 - stats.chi2.cdf(ar_stat_0, df=1)
-    
+        best_idx = np.nanargmin(ar_stats) if np.isfinite(ar_stats).any() else None
+        if best_idx is None:
+            ar_ci_lower = np.nan
+            ar_ci_upper = np.nan
+        else:
+            beta_star = float(beta_grid[best_idx])
+            step = float(beta_grid[1] - beta_grid[0])
+            ar_ci_lower = beta_star - step
+            ar_ci_upper = beta_star + step
+
+    ar_stat_0 = _ar_f_stat(0.0)
+    if pd.notna(ar_stat_0):
+        ar_pval = 1 - stats.f.cdf(ar_stat_0, df_num, df_den)
+    else:
+        ar_pval = np.nan
+
     return ar_ci_lower, ar_ci_upper, ar_stat_0, ar_pval
 
 
@@ -190,7 +217,6 @@ def run_placebo_iv_test(df_dci, cfg, lags=[2, 3]):
             print(f"      ⚠️  Insufficient observations (n={len(df_test)})")
             continue
         
-        Y = df_test[cfg["outcome"]].values
         T = df_test["DCI"].values
         Z = df_test[f"DCI_lag{lag}"].values
         W = df_test[cfg["controls_W"]].values
@@ -230,7 +256,7 @@ def run_placebo_iv_test(df_dci, cfg, lags=[2, 3]):
     return placebo_df
 
 
-def run_iv_analysis():
+def run_iv_analysis(iv_output_path=IV_RESULTS_FILE, placebo_output_path=PLACEBO_IV_FILE):
     print("=" * 70)
     print("Phase 4: Instrumental Variable Analysis (Enhanced)")
     print("=" * 70)
@@ -275,7 +301,7 @@ def run_iv_analysis():
     
     # 2. Instrument Relevance (Correlation)
     corr_instrument = np.corrcoef(T, Z)[0, 1]
-    print(f"\n2. Instrument-Treatment Correlation:")
+    print("\n2. Instrument-Treatment Correlation:")
     print(f"   Corr(DCI, DCI_lag1): {corr_instrument:.4f}")
     
     if abs(corr_instrument) > 0.3:
@@ -348,7 +374,7 @@ def run_iv_analysis():
     print("\n" + "=" * 70)
     print("SUMMARY AND INTERPRETATION")
     print("=" * 70)
-    print(f"\n📈 Effect Size Comparison:")
+    print("\n📈 Effect Size Comparison:")
     print(f"   Naive ATE: {ate_naive:.4f}")
     print(f"   IV ATE:    {ate_iv:.4f}")
     print(f"   Difference: {ate_iv - ate_naive:.4f} ({bias_reduction:.1f}% change)")
@@ -370,13 +396,13 @@ def run_iv_analysis():
         "AR_PValue": [ar_pval, np.nan, ar_pval]
     })
     
-    results_df.to_csv(IV_RESULTS_FILE, index=False)
-    print(f"\n💾 Results saved to {IV_RESULTS_FILE}")
+    results_df.to_csv(iv_output_path, index=False)
+    print(f"\n💾 Results saved to {iv_output_path}")
     
     # Save placebo results
     if len(placebo_df) > 0:
-        placebo_df.to_csv(PLACEBO_IV_FILE, index=False)
-        print(f"💾 Placebo IV results saved to {PLACEBO_IV_FILE}")
+        placebo_df.to_csv(placebo_output_path, index=False)
+        print(f"💾 Placebo IV results saved to {placebo_output_path}")
     
     if (ate_iv < 0) and (ate_iv_ub < 0):
         print("\n✅ IV confirms significant negative effect.")

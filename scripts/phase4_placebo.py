@@ -10,10 +10,6 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import GroupKFold
-import warnings
-
-# Suppress warnings for cleaner output
-warnings.filterwarnings('ignore')
 
 from scripts.analysis_config import load_config
 from scripts.analysis_data import prepare_analysis_data
@@ -62,11 +58,18 @@ def fit_causal_forest(Y, T, X, W, groups, n_estimators=500, random_state=42):
     
     return ate
 
-def run_placebo_analysis(n_iterations=100, n_estimators=200):
+def run_placebo_analysis(
+    n_iterations=100,
+    n_estimators=200,
+    output_csv_path=PLACEBO_RESULTS_FILE,
+    output_figure_path=PLACEBO_FIGURE_FILE,
+    random_state=42,
+):
     print("=" * 70)
     print("Phase 4: Placebo Tests (Randomization Inference)")
     print(f"Running {n_iterations} iterations with {n_estimators} trees each.")
     print("=" * 70)
+    rng = np.random.default_rng(random_state)
 
     # 1. Load Data
     cfg = load_config("analysis_spec.yaml")
@@ -104,7 +107,7 @@ def run_placebo_analysis(n_iterations=100, n_estimators=200):
             
         # Permute Treatment T
         # We shuffle T randomly, breaking the link with Y, X, W
-        t_shuffled = np.random.permutation(t)
+        t_shuffled = rng.permutation(t)
         
         # Fit model on shuffled data
         ate_null = fit_causal_forest(y, t_shuffled, x, w, groups, 
@@ -123,8 +126,9 @@ def run_placebo_analysis(n_iterations=100, n_estimators=200):
         "iteration": range(1, n_iterations + 1),
         "placebo_ate": placebo_ates
     })
-    df_res.to_csv(PLACEBO_RESULTS_FILE, index=False)
-    print(f"\n💾 Results saved to {PLACEBO_RESULTS_FILE}")
+    os.makedirs(os.path.dirname(output_csv_path), exist_ok=True)
+    df_res.to_csv(output_csv_path, index=False)
+    print(f"\n💾 Results saved to {output_csv_path}")
     
     # Calculate p-value (two-sided)
     # Proportion of placebos with absolute effect >= absolute true effect
@@ -156,8 +160,9 @@ def run_placebo_analysis(n_iterations=100, n_estimators=200):
     plt.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(PLACEBO_FIGURE_FILE, dpi=300)
-    print(f"🖼️ Figure saved to {PLACEBO_FIGURE_FILE}")
+    os.makedirs(os.path.dirname(output_figure_path), exist_ok=True)
+    plt.savefig(output_figure_path, dpi=300)
+    print(f"🖼️ Figure saved to {output_figure_path}")
     
     return results
 

@@ -1,0 +1,183 @@
+\begin{thebibliography}{}
+
+\bibitem[Abadie and Cattaneo, 2018]{Abadie2018}
+Abadie, A. and Cattaneo, M.~D. (2018).
+\newblock Econometric methods for program evaluation.
+\newblock {\em Annual Review of Economics}, 10:465--503.
+
+\bibitem[Acemoglu et~al., 2005]{Acemoglu2005}
+Acemoglu, D., Johnson, S., and Robinson, J.~A. (2005).
+\newblock Institutions as a fundamental cause of long-run growth.
+\newblock In {\em Handbook of Economic Growth}, volume~1, pages 385--472.
+  Elsevier.
+
+\bibitem[Anderson and Rubin, 1949]{AndersonRubin1949}
+Anderson, T.~W. and Rubin, H. (1949).
+\newblock Estimation of the parameters of a single equation in a complete
+  system of stochastic equations.
+\newblock {\em The Annals of Mathematical Statistics}, 20(1):46--63.
+
+\bibitem[Arellano and Bond, 1991]{Arellano1991}
+Arellano, M. and Bond, S. (1991).
+\newblock Some tests of specification for panel data: Monte carlo evidence and
+  an application to employment equations.
+\newblock {\em The Review of Economic Studies}, 58(2):277--297.
+
+\bibitem[Athey and Imbens, 2016]{Athey2016}
+Athey, S. and Imbens, G. (2016).
+\newblock Recursive partitioning for heterogeneous causal effects.
+\newblock {\em Proceedings of the National Academy of Sciences},
+  113(27):7353--7360.
+
+\bibitem[Athey and Wager, 2019]{Athey2019}
+Athey, S. and Wager, S. (2019).
+\newblock Estimating treatment effects with causal forests: An application.
+\newblock {\em Observational Studies}, 5(2):37--51.
+
+\bibitem[Breiman, 2001]{Breiman2001}
+Breiman, L. (2001).
+\newblock Random forests.
+\newblock {\em Machine Learning}, 45(1):5--32.
+
+\bibitem[Brynjolfsson and McAfee, 2014]{Brynjolfsson2014}
+Brynjolfsson, E. and McAfee, A. (2014).
+\newblock {\em The Second Machine Age: Work, Progress, and Prosperity in a Time
+  of Brilliant Technologies}.
+\newblock WW Norton \& Company.
+
+\bibitem[Cameron et~al., 2008]{Cameron2008}
+Cameron, A.~C., Gelbach, J.~B., and Miller, D.~L. (2008).
+\newblock Bootstrap-based improvements for inference with clustered errors.
+\newblock {\em The Review of Economics and Statistics}, 90(3):414--427.
+
+\bibitem[Chernozhukov et~al., 2018]{Chernozhukov2018}
+Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey,
+  W., and Robins, J. (2018).
+\newblock Double/debiased machine learning for treatment and structural
+  parameters.
+\newblock {\em The Econometrics Journal}, 21(1):C1--C68.
+
+\bibitem[Copeland and Taylor, 2004]{Copeland2004}
+Copeland, B.~R. and Taylor, M.~S. (2004).
+\newblock Trade, growth, and the environment.
+\newblock {\em Journal of Economic Literature}, 42(1):7--71.
+
+\bibitem[Coroama and Hilty, 2014]{Coroama2012}
+Coroama, V.~C. and Hilty, L.~M. (2014).
+\newblock Assessing internet energy intensity: A review of methods and results.
+\newblock {\em Environmental Impact Assessment Review}, 45:63--68.
+
+\bibitem[Dinda, 2004]{Dinda2004}
+Dinda, S. (2004).
+\newblock Environmental kuznets curve hypothesis: A survey.
+\newblock {\em Ecological Economics}, 49(4):431--455.
+
+\bibitem[Gossart, 2015]{Gossart2015}
+Gossart, C. (2015).
+\newblock Rebound effects and ict: A review of the literature.
+\newblock In {\em ICT Innovations for Sustainability}, pages 435--448.
+  Springer.
+
+\bibitem[Grossman and Krueger, 1995]{Grossman1995}
+Grossman, G.~M. and Krueger, A.~B. (1995).
+\newblock Economic growth and the environment.
+\newblock {\em The Quarterly Journal of Economics}, 110(2):353--377.
+
+\bibitem[Hilty and Aebischer, 2015]{Hilty2015}
+Hilty, L.~M. and Aebischer, B. (2015).
+\newblock Ict for sustainability: An emerging research field.
+\newblock {\em ICT Innovations for Sustainability}, pages 3--36.
+
+\bibitem[Imbens, 2015]{imbens2015causal}
+Imbens, G.~W. (2015).
+\newblock Matching methods in practice: Three examples.
+\newblock {\em Journal of Human Resources}, 50(2):373--419.
+
+\bibitem[Imbens, 2021]{Imbens2021}
+Imbens, G.~W. (2021).
+\newblock Statistical significance, p-values, and the reporting of uncertainty.
+\newblock {\em Journal of Economic Perspectives}, 35(3):157--174.
+
+\bibitem[Jorgenson and Vu, 2016]{Jorgenson2016}
+Jorgenson, D.~W. and Vu, K.~M. (2016).
+\newblock The ict revolution, world economic growth, and policy issues.
+\newblock {\em Telecommunications Policy}, 40(5):383--397.
+
+\bibitem[Kongsamut et~al., 2001]{Kongsamut2001}
+Kongsamut, P., Rebelo, S., and Xie, D. (2001).
+\newblock Beyond balanced growth.
+\newblock {\em The Review of Economic Studies}, 68(4):869--882.
+
+\bibitem[Kuznets, 1955]{Kuznets1955}
+Kuznets, S. (1955).
+\newblock Economic growth and income inequality.
+\newblock {\em The American Economic Review}, 45(1):1--28.
+
+\bibitem[Lange et~al., 2020]{Lange2020}
+Lange, S., Pohl, J., and Santarius, T. (2020).
+\newblock Digitalization and energy consumption. does ict reduce energy demand?
+\newblock {\em Ecological Economics}, 176:106760.
+
+\bibitem[Levinson and Taylor, 2008]{Levinson2008}
+Levinson, A. and Taylor, M.~S. (2008).
+\newblock Unmasking the pollution haven effect.
+\newblock {\em International Economic Review}, 49(1):223--254.
+
+\bibitem[North, 1990]{North1990}
+North, D.~C. (1990).
+\newblock {\em Institutions, Institutional Change and Economic Performance}.
+\newblock Cambridge University Press.
+
+\bibitem[Panayotou, 1997]{Panayotou1997}
+Panayotou, T. (1997).
+\newblock Demystifying the environmental kuznets curve: Turning a black box
+  into a policy tool.
+\newblock {\em Environment and Development Economics}, 2(4):465--484.
+
+\bibitem[R{\"o}ller and Waverman, 2001]{Roller2001}
+R{\"o}ller, L.-H. and Waverman, L. (2001).
+\newblock Telecommunications infrastructure and economic development: A
+  simultaneous approach.
+\newblock {\em American Economic Review}, 91(4):909--923.
+
+\bibitem[Sadorsky, 2012]{Sadorsky2012}
+Sadorsky, P. (2012).
+\newblock Information communication technology and electricity consumption in
+  emerging economies.
+\newblock {\em Energy Policy}, 48:130--136.
+
+\bibitem[Staiger and Stock, 1997]{staiger1997}
+Staiger, D. and Stock, J.~H. (1997).
+\newblock Instrumental variables regression with weak instruments.
+\newblock {\em Econometrica}, 65(3):557--586.
+
+\bibitem[Stern, 2004]{Stern2004}
+Stern, D.~I. (2004).
+\newblock The rise and fall of the environmental kuznets curve.
+\newblock {\em World Development}, 32(8):1419--1439.
+
+\bibitem[Stock and Yogo, 2005]{Stock2005}
+Stock, J.~H. and Yogo, M. (2005).
+\newblock Testing for weak instruments in linear iv regression.
+\newblock In {\em Identification and Inference for Econometric Models: Essays
+  in Honor of Thomas Rothenberg}, pages 80--108. Cambridge University Press.
+
+\bibitem[Varian, 2014]{Varian2014}
+Varian, H.~R. (2014).
+\newblock Big data: New tricks for econometrics.
+\newblock {\em Journal of Economic Perspectives}, 28(2):3--28.
+
+\bibitem[Wager and Athey, 2018]{Wager2018}
+Wager, S. and Athey, S. (2018).
+\newblock Estimation and inference of heterogeneous treatment effects using
+  random forests.
+\newblock {\em Journal of the American Statistical Association},
+  113(523):1228--1242.
+
+\bibitem[Wooldridge, 2005]{Wooldridge2005}
+Wooldridge, J.~M. (2005).
+\newblock Fixed-effects and related estimators for correlated
+  random-coefficient and treatment-effect panel data models.
+\newblock {\em Review of Economics and Statistics}, 87(2):385--390.
+
+\end{thebibliography}

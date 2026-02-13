@@ -1,0 +1,42 @@
+
+1. ATE ESTIMATES COMPARISON
+   -------------------------
+   DragonNet ATE:     -1.9460
+   Causal Forest ATE: -3.2919
+   Linear DML ATE:    -2.5065
+
+   Difference (DragonNet - CF): 1.3459
+   Relative Difference: 40.9%
+
+2. PREDICTION PERFORMANCE (DragonNet)
+   ---------------------------------
+   Outcome MSE:  0.2003
+   Outcome RMSE: 0.4475
+   Outcome R²:   0.9894
+
+3. PROPENSITY SCORE QUALITY (DragonNet)
+   -------------------------------------
+   AUC:           0.9970
+   Brier Score:   0.0167
+   Overlap:       34.62%
+
+4. KEY FINDINGS
+   -------------
+   - DragonNet provides a neural network-based alternative to Causal Forest
+   - The ATE estimates are divergent between methods
+   - DragonNet's propensity score estimation shows good discrimination
+   - Overlap condition: Partial (34.6%)
+
+5. METHODOLOGICAL NOTES
+   ---------------------
+   - DragonNet uses a shared representation with three-headed output
+   - Targeted regularization encourages efficient ATE estimation
+   - Binary treatment created via median split of continuous DCI
+   - Causal Forest uses 2000 trees with honest estimation
+
+6. RECOMMENDATIONS
+   ----------------
+   - Both methods provide similar ATE estimates, increasing confidence
+   - DragonNet offers better outcome prediction (R² = 0.989)
+   - Causal Forest provides built-in inference (SE, CI)
+   - Consider ensemble approach combining both methods

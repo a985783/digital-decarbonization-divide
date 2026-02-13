@@ -1,0 +1,225 @@
+{
+  "framework": {
+    "name": "Two-Dimensional Digital Decarbonization Framework",
+    "version": "1.0",
+    "based_on": "Causal Forest Analysis (N=40 countries, 2000-2023)",
+    "key_findings": {
+      "iv_estimate": -1.91,
+      "iv_ci_lower": -2.37,
+      "iv_ci_upper": -1.46,
+      "ate_causal_forest": -1.73,
+      "mediation_energy_efficiency": 0.117,
+      "sweet_spot_groups": ["Lower-Mid", "Upper-Mid"],
+      "sweet_spot_effect": -2.17
+    }
+  },
+  "country_classifications": {
+    "leaders": {
+      "definition": "High DCI (>0.5 SD) + High Institutions (>0.5 SD)",
+      "countries": ["AUS", "AUT", "BEL", "DEU", "ESP", "FRA", "GBR", "ITA", "JPN", "KOR", "NZL", "USA"],
+      "characteristics": {
+        "avg_dci": "High (PCA index > 0.5)",
+        "avg_institution": "High (WGI > 0.5)",
+        "avg_cate": -2.24,
+        "typical_co2": "4-15 tons/capita"
+      },
+      "policy_strategy": {
+        "primary": "Technology Export Strategy",
+        "description": "Leverage advanced digital infrastructure to develop green technology exports while achieving absolute decoupling",
+        "key_actions": [
+          "Invest in next-generation digital infrastructure (5G/6G, edge computing)",
+          "Develop green tech export industries (smart grids, energy storage, carbon capture)",
+          "Implement carbon pricing to complement digital efficiency gains",
+          "Lead international standards for digital sustainability",
+          "Focus on absolute decoupling, not just relative efficiency"
+        ],
+        "investment_priority": ["R&D", "Green tech manufacturing", "International standards"],
+        "expected_impact": {
+          "co2_reduction_per_dci_unit": -1.26,
+          "confidence_interval": "[-1.67, -0.81]",
+          "timeline": "3-5 years for domestic, 5-10 years for export impact"
+        }
+      }
+    },
+    "catch_up": {
+      "definition": "Medium DCI (-0.5 to 0.5 SD) + Medium Institutions (-0.5 to 0.5 SD)",
+      "countries": ["ARG", "BRA", "CHN", "COL", "EGY", "IDN", "IND", "MEX", "MYS", "PER", "PHL", "RUS", "SAU", "THA", "TUR", "VNM", "ZAF"],
+      "characteristics": {
+        "avg_dci": "Medium (PCA index -0.5 to 0.5)",
+        "avg_institution": "Medium (WGI -0.5 to 0.5)",
+        "avg_cate": -2.18,
+        "typical_co2": "1-8 tons/capita"
+      },
+      "policy_strategy": {
+        "primary": "Sweet Spot Investment",
+        "description": "Maximize decarbonization returns through targeted digital infrastructure investment combined with institutional strengthening",
+        "key_actions": [
+          "Prioritize digital infrastructure in high-emission sectors (industry, transport, buildings)",
+          "Bundle digital investment with institutional reforms",
+          "Leverage international climate finance for digital projects",
+          "Focus on quick wins: smart grids, industrial efficiency, digital agriculture",
+          "Develop local digital capacity to avoid technology dependency"
+        ],
+        "investment_priority": ["Smart grids", "Industrial digitalization", "Digital public services"],
+        "expected_impact": {
+          "co2_reduction_per_dci_unit": -2.17,
+          "confidence_interval": "[-2.66, -1.76]",
+          "timeline": "2-4 years for significant impact",
+          "note": "Highest marginal returns to digital investment"
+        }
+      }
+    },
+    "potential": {
+      "definition": "Low DCI (<-0.5 SD) + High Institutions (>0.5 SD)",
+      "countries": ["DNK", "NLD", "NOR"],
+      "characteristics": {
+        "avg_dci": "Low-to-Medium (PCA index variable)",
+        "avg_institution": "High (WGI > 0.5)",
+        "avg_cate": -1.08,
+        "typical_co2": "4-8 tons/capita"
+      },
+      "policy_strategy": {
+        "primary": "Infrastructure First",
+        "description": "Build digital infrastructure to unlock decarbonization potential enabled by strong institutions",
+        "key_actions": [
+          "Accelerate digital infrastructure deployment (fiber, 5G, data centers)",
+          "Leverage strong institutions for rapid deployment",
+          "Focus on sector-specific applications (offshore wind, circular economy)",
+          "Develop digital skills to match infrastructure",
+          "Create regulatory frameworks for digital energy markets"
+        ],
+        "investment_priority": ["Digital infrastructure", "Sector-specific applications", "Skills development"],
+        "expected_impact": {
+          "co2_reduction_per_dci_unit": -1.19,
+          "confidence_interval": "[-1.47, -0.99]",
+          "timeline": "3-5 years",
+          "note": "Strong institutions enable rapid scaling once infrastructure is in place"
+        }
+      }
+    },
+    "struggling": {
+      "definition": "Low DCI (<-0.5 SD) + Low Institutions (<-0.5 SD)",
+      "countries": ["BGD", "NGA", "PAK"],
+      "characteristics": {
+        "avg_dci": "Low (PCA index < -0.5)",
+        "avg_institution": "Low (WGI < -0.5)",
+        "avg_cate": -0.97,
+        "typical_co2": "0.5-1 ton/capita"
+      },
+      "policy_strategy": {
+        "primary": "International Aid with Capacity Building",
+        "description": "Require substantial international support combining digital infrastructure with institutional development",
+        "key_actions": [
+          "Prioritize basic connectivity and electricity access",
+          "Bundle digital projects with governance reforms",
+          "Leverage multilateral development bank financing",
+          "Focus on adaptation co-benefits (early warning, climate resilience)",
+          "Build local capacity for technology operation and maintenance"
+        ],
+        "investment_priority": ["Basic connectivity", "Climate adaptation", "Institutional capacity"],
+        "expected_impact": {
+          "co2_reduction_per_dci_unit": -0.97,
+          "confidence_interval": "[-1.04, -0.90]",
+          "timeline": "5-10 years",
+          "note": "Lower returns require patient capital and comprehensive support"
+        }
+      }
+    },
+    "exceptions": {
+      "definition": "High DCI + High Institutions but weaker than expected effects",
+      "countries": ["CAN", "CHE", "FIN", "IRL", "SWE"],
+      "characteristics": {
+        "note": "These countries show weaker DCI effects due to high EDS (External Digital Specialization) or already-clean energy systems",
+        "high_eds_factor": "Service export orientation may dampen domestic efficiency gains",
+        "renewable_factor": "Already high renewable share reduces marginal carbon savings from digitalization"
+      },
+      "policy_strategy": {
+        "primary": "Absolute Decoupling Focus",
+        "description": "Shift from efficiency gains to absolute emission reductions through system transformation",
+        "key_actions": [
+          "Focus on absolute emission caps rather than efficiency improvements",
+          "Address structural factors (high EDS) through sectoral policies",
+          "Invest in breakthrough technologies (green hydrogen, CCS)",
+          "Lead on international climate finance and technology transfer",
+          "Develop circular economy models"
+        ],
+        "expected_impact": {
+          "note": "These countries need different policy approaches as standard DCI investments show diminishing returns"
+        }
+      }
+    }
+  },
+  "mechanism_guidance": {
+    "energy_efficiency": {
+      "mediation_share": 0.117,
+      "policy_implications": "Digital investments should prioritize measurable energy efficiency improvements",
+      "key_sectors": ["Buildings", "Industry", "Transport"],
+      "measurement": "Track energy intensity alongside digital adoption"
+    },
+    "institutional_quality": {
+      "role": "Critical enabler",
+      "policy_implications": "Digital investments must be paired with governance reforms",
+      "key_areas": ["Regulatory quality", "Government effectiveness", "Rule of law"]
+    },
+    "renewable_energy": {
+      "interaction": "Diminishing returns in high-renewable contexts",
+      "policy_implications": "Digital investment priority should be inverse to current renewable share",
+      "optimal_context": "Countries with 20-50% renewable share see strongest DCI effects"
+    }
+  },
+  "investment_pathways": {
+    "short_term": {
+      "timeline": "0-2 years",
+      "focus": "Quick wins and foundational infrastructure",
+      "actions": {
+        "all": ["Smart metering deployment", "Digital government services", "Public WiFi in high-traffic areas"],
+        "catch_up": ["Industrial efficiency audits", "Agricultural digital extension"],
+        "leaders": ["Grid flexibility services", "Carbon tracking platforms"]
+      }
+    },
+    "medium_term": {
+      "timeline": "2-5 years",
+      "focus": "System integration and scaling",
+      "actions": {
+        "all": ["Smart grid integration", "Sectoral digital platforms", "Data infrastructure"],
+        "catch_up": ["Manufacturing 4.0", "Smart city pilots"],
+        "leaders": ["AI-powered optimization", "Circular economy platforms"]
+      }
+    },
+    "long_term": {
+      "timeline": "5-10 years",
+      "focus": "System transformation and innovation",
+      "actions": {
+        "all": ["Full sectoral digitalization", "Cross-border digital cooperation"],
+        "catch_up": ["Export-oriented digital services", "Green tech manufacturing"],
+        "leaders": ["Next-generation infrastructure", "Global green tech leadership"]
+      }
+    }
+  },
+  "sdg_alignment": {
+    "sdg_7": {
+      "name": "Affordable and Clean Energy",
+      "contribution": "Direct: Digital infrastructure enables renewable integration and grid optimization",
+      "quantified_impact": "11.7% of DCI effect through energy efficiency improvements",
+      "targets": ["7.2", "7.3", "7.a"]
+    },
+    "sdg_9": {
+      "name": "Industry, Innovation and Infrastructure",
+      "contribution": "Direct: DCI measures infrastructure capacity; supports industrial digitalization",
+      "quantified_impact": "Middle-income countries see 2.17 tons CO2 reduction per DCI unit",
+      "targets": ["9.1", "9.4", "9.5"]
+    },
+    "sdg_12": {
+      "name": "Responsible Consumption and Production",
+      "contribution": "Indirect: Digital tracking enables circular economy and resource efficiency",
+      "quantified_impact": "Structural change accounts for -9.5% of effect (negative due to rebound)",
+      "targets": ["12.2", "12.4", "12.8"]
+    },
+    "sdg_13": {
+      "name": "Climate Action",
+      "contribution": "Direct: -1.91 tons CO2/capita per DCI unit (IV estimate)",
+      "quantified_impact": "95% CI: [-2.37, -1.46] tons CO2/capita reduction",
+      "targets": ["13.1", "13.2", "13.b"]
+    }
+  }
+}

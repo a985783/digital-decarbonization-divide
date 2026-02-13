@@ -1,0 +1,11 @@
+Metric,Value
+Naive OLS Coefficient,11.567206704144454
+Naive OLS R-squared,0.0012121685311151653
+Controlled OLS Coefficient,-263.7491333053877
+Controlled OLS R-squared,0.7799164683311189
+IV Coefficient,-273.70538223359245
+IV R-squared,0.7811129998543025
+First-stage R-squared,0.9779727300431389
+Representative Delta,1.009191007928951
+Representative R2_max,0.95
+Sample Size,800.0

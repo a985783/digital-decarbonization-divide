@@ -1,23 +1,28 @@
-# macOS
-.DS_Store
+.worktrees/
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
 
-# LaTeX
-*.aux
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS/editor noise
+.DS_Store
+.idea/
+.vscode/
+
+# Build/package artifacts
+build/
+dist/
+*.egg-info/
 *.log
-*.out
-*.pdf
-*.bbl
-*.blg
-*.fdb_latexmk
-*.fls
-*.synctex.gz
-*.toc
-*.xdv
+*.tmp
+*.bak
 
-# Project Specific
-*.zip
-data/temp_downloads/
+# Local outputs not required in git history
+results/figures/enhanced/*.svg

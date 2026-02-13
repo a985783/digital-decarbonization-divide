@@ -10,11 +10,7 @@ Addresses审稿人关切：
 import pandas as pd
 import numpy as np
 import os
-import warnings
 from sklearn.model_selection import GroupKFold
-import matplotlib.pyplot as plt
-
-warnings.filterwarnings('ignore')
 
 try:
     from econml.dml import CausalForestDML
@@ -46,6 +42,8 @@ def bootstrap_convergence_diagnostic(df, cfg, n_bootstrap_list=[100, 200, 500, 1
     groups = df_clean[cfg["groups"]].values
     
     results = []
+    country_codes = df_clean[cfg["groups"]].to_numpy()
+    unique_countries = np.unique(country_codes)
     
     for B in n_bootstrap_list:
         print(f"\n   Testing B = {B} bootstrap iterations...")
@@ -69,19 +67,17 @@ def bootstrap_convergence_diagnostic(df, cfg, n_bootstrap_list=[100, 200, 500, 1
         cate_pred = est.effect(x)
         
         # Country-cluster bootstrap for ATE
-        np.random.seed(42)
+        rng = np.random.default_rng(42 + B)
         bootstrap_ates = []
-        countries = df_clean['country'].unique()
-        
+        country_to_idx = {
+            c: np.where(country_codes == c)[0]
+            for c in unique_countries
+        }
+
         for _ in range(B):
-            # Resample countries with replacement
-            sampled_countries = np.random.choice(countries, size=len(countries), replace=True)
-            
-            # Create bootstrap sample
-            bootstrap_sample = df_clean[df_clean['country'].isin(sampled_countries)]
-            
-            # Calculate ATE for this bootstrap
-            bootstrap_cate = cate_pred[df_clean['country'].isin(sampled_countries)]
+            sampled_countries = rng.choice(unique_countries, size=len(unique_countries), replace=True)
+            sampled_idx = np.concatenate([country_to_idx[c] for c in sampled_countries])
+            bootstrap_cate = cate_pred[sampled_idx]
             bootstrap_ates.append(np.mean(bootstrap_cate))
         
         # Calculate bootstrap statistics
@@ -105,7 +101,7 @@ def bootstrap_convergence_diagnostic(df, cfg, n_bootstrap_list=[100, 200, 500, 1
     results_df = pd.DataFrame(results)
     ci_width_change = results_df['ci_width'].iloc[-1] / results_df['ci_width'].iloc[0]
     
-    print(f"\n📊 Convergence Analysis:")
+    print("\n📊 Convergence Analysis:")
     print(f"   CI width reduction (B=100 to B=1000): {1-ci_width_change:.1%}")
     
     if ci_width_change < 0.8:
@@ -123,6 +119,7 @@ def sample_size_sensitivity(df, cfg, sample_sizes=[0.6, 0.7, 0.8, 0.9, 1.0]):
     print("=" * 70)
     
     df_clean = df.dropna(subset=[cfg["outcome"]])
+    rng = np.random.default_rng(42)
     
     results = []
     
@@ -131,7 +128,7 @@ def sample_size_sensitivity(df, cfg, sample_sizes=[0.6, 0.7, 0.8, 0.9, 1.0]):
             # Subsample countries
             countries = df_clean['country'].unique()
             n_countries = int(len(countries) * frac)
-            selected_countries = np.random.choice(countries, n_countries, replace=False)
+            selected_countries = rng.choice(countries, n_countries, replace=False)
             df_sub = df_clean[df_clean['country'].isin(selected_countries)]
             sample_desc = f"{n_countries} countries ({frac:.0%})"
         else:
@@ -181,12 +178,13 @@ def sample_size_sensitivity(df, cfg, sample_sizes=[0.6, 0.7, 0.8, 0.9, 1.0]):
     results_df = pd.DataFrame(results)
     ate_range = results_df['ate_mean'].max() - results_df['ate_mean'].min()
     ate_max = abs(results_df['ate_mean'].max())
+    relative_variation = ate_range / ate_max if ate_max > 0 else np.inf
     
-    print(f"\n📊 Stability Analysis:")
+    print("\n📊 Stability Analysis:")
     print(f"   ATE range across sample sizes: {ate_range:.4f}")
-    print(f"   Relative variation: {ate_range / ate_max:.1%}")
-    
-    if ate_range / ate_max < 0.3:
+    print(f"   Relative variation: {relative_variation:.1%}")
+
+    if relative_variation < 0.3:
         print("   ✅ Results stable across sample sizes")
     else:
         print("   ⚠️  Results sensitive to sample size")
@@ -209,8 +207,12 @@ def run_small_sample_robustness():
     # Combine results
     summary = {
         'bootstrap_converged': bootstrap_results['ci_width'].iloc[-1] < bootstrap_results['ci_width'].iloc[0] * 0.8,
-        'sample_size_stable': (sample_size_results['ate_mean'].max() - sample_size_results['ate_mean'].min()) / 
-                              abs(sample_size_results['ate_mean'].max()) < 0.3,
+        'sample_size_stable': (
+            (sample_size_results['ate_mean'].max() - sample_size_results['ate_mean'].min())
+            / abs(sample_size_results['ate_mean'].max())
+            if abs(sample_size_results['ate_mean'].max()) > 0
+            else np.inf
+        ) < 0.3,
         'min_significant_pct': sample_size_results['significant_pct'].min(),
         'final_ate': sample_size_results.loc[sample_size_results['sample_fraction'] == 1.0, 'ate_mean'].iloc[0]
     }
@@ -235,11 +237,11 @@ def run_small_sample_robustness():
         print("   - Consider alternative estimators (e.g., DR-Learner)")
         print("   - Acknowledge limitations in discussion")
     
-    print(f"\n📊 Key Statistics:")
+    print("\n📊 Key Statistics:")
     print(f"   Minimum significant observations: {summary['min_significant_pct']:.1f}%")
     print(f"   Final ATE estimate: {summary['final_ate']:.4f}")
     
-    print(f"\n💾 Detailed results saved to:")
+    print("\n💾 Detailed results saved to:")
     print(f"   - {os.path.join(RESULTS_DIR, 'bootstrap_convergence.csv')}")
     print(f"   - {os.path.join(RESULTS_DIR, 'sample_size_sensitivity.csv')}")
     print(f"   - {ROBUSTNESS_RESULTS_FILE}")

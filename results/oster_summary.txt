@@ -1,0 +1,45 @@
+
+======================================================================
+OSTER SENSITIVITY ANALYSIS - PAPER SUMMARY
+======================================================================
+
+1. METHODOLOGY
+   We implement Oster's (2019) sensitivity analysis to assess the robustness
+   of our IV estimate to potential omitted variable bias. The analysis
+   calculates the breakdown point (delta*), which represents how much stronger
+   omitted variables would need to be relative to observed controls to explain
+   away the estimated treatment effect.
+
+2. KEY RESULTS
+   - IV Estimate: -273.705
+   - Observed R-squared: 0.7799
+   - Sample Size: 800 observations
+
+3. SENSITIVITY FINDINGS
+   Assuming a maximum R-squared of 0.950 (1.3 times the observed R-squared),
+   omitted variables would need to be 1.01 times as important as the
+   observed controls to explain away the IV estimate.
+
+4. INTERPRETATION
+   The IV estimate is MODERATELY ROBUST to omitted variable bias.
+   Omitted variables would need to be stronger than the observed controls
+   to explain away the result, suggesting that unobserved confounding is
+   unlikely to fully account for our findings.
+
+5. COMPARISON TO CONVENTIONAL THRESHOLDS
+   - delta = 1.0: Omitted variables equally important as observed controls
+   - Our delta = 1.01: Omitted variables 1.01x as important
+
+   Conventional wisdom suggests delta > 1 indicates robustness (Altonji et al. 2005;
+   Oster 2019). Our estimate exceeds this threshold, supporting the causal
+   interpretation of the DCI-CO2 relationship.
+
+6. RECOMMENDED PAPER TEXT
+   "To assess sensitivity to omitted variable bias, we implement Oster's (2019)
+   methodology. The breakdown point analysis indicates that omitted variables
+   would need to be 1.01 times as important as observed controls to
+   explain away our IV estimate of -273.705. This suggests our findings are
+   moderately robust to potential unobserved
+   confounding."
+
+======================================================================

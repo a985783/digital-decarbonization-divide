@@ -1,0 +1,161 @@
+country_code,country_name,classification,dci_increase,expected_reduction_tons,ci_lower,ci_upper,timeline_years,priority
+ARG,Argentina,catch_up,0.5,-0.92,-1.14,-0.7,5,Sweet spot investment - maximize returns
+ARG,Argentina,catch_up,1.0,-1.85,-2.28,-1.41,5,Sweet spot investment - maximize returns
+ARG,Argentina,catch_up,1.5,-2.77,-3.43,-2.11,5,Sweet spot investment - maximize returns
+ARG,Argentina,catch_up,2.0,-3.69,-4.57,-2.81,5,Sweet spot investment - maximize returns
+AUS,Australia,leaders,0.5,-0.72,-0.9,-0.55,5,Sweet spot investment - maximize returns
+AUS,Australia,leaders,1.0,-1.45,-1.8,-1.1,5,Sweet spot investment - maximize returns
+AUS,Australia,leaders,1.5,-2.17,-2.69,-1.66,5,Sweet spot investment - maximize returns
+AUS,Australia,leaders,2.0,-2.9,-3.59,-2.21,5,Sweet spot investment - maximize returns
+AUT,Austria,leaders,0.5,-0.63,-0.78,-0.48,5,Sweet spot investment - maximize returns
+AUT,Austria,leaders,1.0,-1.26,-1.56,-0.96,5,Sweet spot investment - maximize returns
+AUT,Austria,leaders,1.5,-1.89,-2.34,-1.44,5,Sweet spot investment - maximize returns
+AUT,Austria,leaders,2.0,-2.52,-3.12,-1.92,5,Sweet spot investment - maximize returns
+BGD,Bangladesh,struggling,0.5,-0.48,-0.59,-0.36,5,Sweet spot investment - maximize returns
+BGD,Bangladesh,struggling,1.0,-0.95,-1.18,-0.73,5,Sweet spot investment - maximize returns
+BGD,Bangladesh,struggling,1.5,-1.43,-1.77,-1.09,5,Sweet spot investment - maximize returns
+BGD,Bangladesh,struggling,2.0,-1.91,-2.36,-1.45,5,Sweet spot investment - maximize returns
+BEL,Belgium,leaders,0.5,-0.63,-0.78,-0.48,5,Sweet spot investment - maximize returns
+BEL,Belgium,leaders,1.0,-1.26,-1.56,-0.96,5,Sweet spot investment - maximize returns
+BEL,Belgium,leaders,1.5,-1.89,-2.34,-1.44,5,Sweet spot investment - maximize returns
+BEL,Belgium,leaders,2.0,-2.52,-3.12,-1.92,5,Sweet spot investment - maximize returns
+BRA,Brazil,catch_up,0.5,-0.79,-0.97,-0.6,5,Sweet spot investment - maximize returns
+BRA,Brazil,catch_up,1.0,-1.57,-1.95,-1.2,5,Sweet spot investment - maximize returns
+BRA,Brazil,catch_up,1.5,-2.36,-2.92,-1.8,5,Sweet spot investment - maximize returns
+BRA,Brazil,catch_up,2.0,-3.15,-3.9,-2.4,5,Sweet spot investment - maximize returns
+CAN,Canada,exceptions,0.5,-0.44,-0.55,-0.34,5,Sweet spot investment - maximize returns
+CAN,Canada,exceptions,1.0,-0.88,-1.09,-0.67,5,Sweet spot investment - maximize returns
+CAN,Canada,exceptions,1.5,-1.32,-1.64,-1.01,5,Sweet spot investment - maximize returns
+CAN,Canada,exceptions,2.0,-1.76,-2.19,-1.34,5,Sweet spot investment - maximize returns
+CHE,Switzerland,exceptions,0.5,-0.44,-0.55,-0.34,5,Sweet spot investment - maximize returns
+CHE,Switzerland,exceptions,1.0,-0.88,-1.09,-0.67,5,Sweet spot investment - maximize returns
+CHE,Switzerland,exceptions,1.5,-1.32,-1.64,-1.01,5,Sweet spot investment - maximize returns
+CHE,Switzerland,exceptions,2.0,-1.76,-2.19,-1.34,5,Sweet spot investment - maximize returns
+CHN,China,catch_up,0.5,-0.97,-1.21,-0.74,5,Sweet spot investment - maximize returns
+CHN,China,catch_up,1.0,-1.95,-2.41,-1.48,5,Sweet spot investment - maximize returns
+CHN,China,catch_up,1.5,-2.92,-3.62,-2.23,5,Sweet spot investment - maximize returns
+CHN,China,catch_up,2.0,-3.9,-4.82,-2.97,5,Sweet spot investment - maximize returns
+COL,Colombia,catch_up,0.5,-0.65,-0.8,-0.49,5,Sweet spot investment - maximize returns
+COL,Colombia,catch_up,1.0,-1.3,-1.6,-0.99,5,Sweet spot investment - maximize returns
+COL,Colombia,catch_up,1.5,-1.94,-2.41,-1.48,5,Sweet spot investment - maximize returns
+COL,Colombia,catch_up,2.0,-2.59,-3.21,-1.97,5,Sweet spot investment - maximize returns
+DEU,Germany,leaders,0.5,-0.54,-0.66,-0.41,5,Sweet spot investment - maximize returns
+DEU,Germany,leaders,1.0,-1.07,-1.33,-0.82,5,Sweet spot investment - maximize returns
+DEU,Germany,leaders,1.5,-1.61,-1.99,-1.22,5,Sweet spot investment - maximize returns
+DEU,Germany,leaders,2.0,-2.14,-2.65,-1.63,5,Sweet spot investment - maximize returns
+DNK,Denmark,potential,0.5,-0.44,-0.55,-0.34,5,Sweet spot investment - maximize returns
+DNK,Denmark,potential,1.0,-0.88,-1.09,-0.67,5,Sweet spot investment - maximize returns
+DNK,Denmark,potential,1.5,-1.32,-1.64,-1.01,5,Sweet spot investment - maximize returns
+DNK,Denmark,potential,2.0,-1.76,-2.19,-1.34,5,Sweet spot investment - maximize returns
+EGY,Egypt,catch_up,0.5,-0.48,-0.59,-0.36,5,Sweet spot investment - maximize returns
+EGY,Egypt,catch_up,1.0,-0.95,-1.18,-0.73,5,Sweet spot investment - maximize returns
+EGY,Egypt,catch_up,1.5,-1.43,-1.77,-1.09,5,Sweet spot investment - maximize returns
+EGY,Egypt,catch_up,2.0,-1.91,-2.36,-1.45,5,Sweet spot investment - maximize returns
+ESP,Spain,leaders,0.5,-0.54,-0.66,-0.41,5,Sweet spot investment - maximize returns
+ESP,Spain,leaders,1.0,-1.07,-1.33,-0.82,5,Sweet spot investment - maximize returns
+ESP,Spain,leaders,1.5,-1.61,-1.99,-1.22,5,Sweet spot investment - maximize returns
+ESP,Spain,leaders,2.0,-2.14,-2.65,-1.63,5,Sweet spot investment - maximize returns
+FIN,Finland,exceptions,0.5,-0.54,-0.66,-0.41,5,Sweet spot investment - maximize returns
+FIN,Finland,exceptions,1.0,-1.07,-1.33,-0.82,5,Sweet spot investment - maximize returns
+FIN,Finland,exceptions,1.5,-1.61,-1.99,-1.22,5,Sweet spot investment - maximize returns
+FIN,Finland,exceptions,2.0,-2.14,-2.65,-1.63,5,Sweet spot investment - maximize returns
+FRA,France,leaders,0.5,-0.63,-0.78,-0.48,5,Sweet spot investment - maximize returns
+FRA,France,leaders,1.0,-1.26,-1.56,-0.96,5,Sweet spot investment - maximize returns
+FRA,France,leaders,1.5,-1.89,-2.34,-1.44,5,Sweet spot investment - maximize returns
+FRA,France,leaders,2.0,-2.52,-3.12,-1.92,5,Sweet spot investment - maximize returns
+GBR,United Kingdom,leaders,0.5,-0.54,-0.66,-0.41,5,Sweet spot investment - maximize returns
+GBR,United Kingdom,leaders,1.0,-1.07,-1.33,-0.82,5,Sweet spot investment - maximize returns
+GBR,United Kingdom,leaders,1.5,-1.61,-1.99,-1.22,5,Sweet spot investment - maximize returns
+GBR,United Kingdom,leaders,2.0,-2.14,-2.65,-1.63,5,Sweet spot investment - maximize returns
+IDN,Indonesia,catch_up,0.5,-0.48,-0.59,-0.36,5,Sweet spot investment - maximize returns
+IDN,Indonesia,catch_up,1.0,-0.95,-1.18,-0.73,5,Sweet spot investment - maximize returns
+IDN,Indonesia,catch_up,1.5,-1.43,-1.77,-1.09,5,Sweet spot investment - maximize returns
+IDN,Indonesia,catch_up,2.0,-1.91,-2.36,-1.45,5,Sweet spot investment - maximize returns
+IND,India,catch_up,0.5,-0.5,-0.62,-0.38,5,Sweet spot investment - maximize returns
+IND,India,catch_up,1.0,-1.01,-1.25,-0.77,5,Sweet spot investment - maximize returns
+IND,India,catch_up,1.5,-1.51,-1.87,-1.15,5,Sweet spot investment - maximize returns
+IND,India,catch_up,2.0,-2.01,-2.49,-1.53,5,Sweet spot investment - maximize returns
+IRL,Ireland,exceptions,0.5,-0.63,-0.78,-0.48,5,Sweet spot investment - maximize returns
+IRL,Ireland,exceptions,1.0,-1.26,-1.56,-0.96,5,Sweet spot investment - maximize returns
+IRL,Ireland,exceptions,1.5,-1.89,-2.34,-1.44,5,Sweet spot investment - maximize returns
+IRL,Ireland,exceptions,2.0,-2.52,-3.12,-1.92,5,Sweet spot investment - maximize returns
+ITA,Italy,leaders,0.5,-0.54,-0.66,-0.41,5,Sweet spot investment - maximize returns
+ITA,Italy,leaders,1.0,-1.07,-1.33,-0.82,5,Sweet spot investment - maximize returns
+ITA,Italy,leaders,1.5,-1.61,-1.99,-1.22,5,Sweet spot investment - maximize returns
+ITA,Italy,leaders,2.0,-2.14,-2.65,-1.63,5,Sweet spot investment - maximize returns
+JPN,Japan,leaders,0.5,-0.63,-0.78,-0.48,5,Sweet spot investment - maximize returns
+JPN,Japan,leaders,1.0,-1.26,-1.56,-0.96,5,Sweet spot investment - maximize returns
+JPN,Japan,leaders,1.5,-1.89,-2.34,-1.44,5,Sweet spot investment - maximize returns
+JPN,Japan,leaders,2.0,-2.52,-3.12,-1.92,5,Sweet spot investment - maximize returns
+KOR,South Korea,leaders,0.5,-0.72,-0.9,-0.55,5,Sweet spot investment - maximize returns
+KOR,South Korea,leaders,1.0,-1.45,-1.8,-1.1,5,Sweet spot investment - maximize returns
+KOR,South Korea,leaders,1.5,-2.17,-2.69,-1.66,5,Sweet spot investment - maximize returns
+KOR,South Korea,leaders,2.0,-2.9,-3.59,-2.21,5,Sweet spot investment - maximize returns
+MEX,Mexico,catch_up,0.5,-0.93,-1.15,-0.7,5,Sweet spot investment - maximize returns
+MEX,Mexico,catch_up,1.0,-1.85,-2.29,-1.41,5,Sweet spot investment - maximize returns
+MEX,Mexico,catch_up,1.5,-2.78,-3.44,-2.11,5,Sweet spot investment - maximize returns
+MEX,Mexico,catch_up,2.0,-3.7,-4.58,-2.82,5,Sweet spot investment - maximize returns
+MYS,Malaysia,catch_up,0.5,-1.06,-1.32,-0.81,5,Sweet spot investment - maximize returns
+MYS,Malaysia,catch_up,1.0,-2.13,-2.64,-1.62,5,Sweet spot investment - maximize returns
+MYS,Malaysia,catch_up,1.5,-3.19,-3.95,-2.43,5,Sweet spot investment - maximize returns
+MYS,Malaysia,catch_up,2.0,-4.26,-5.27,-3.24,5,Sweet spot investment - maximize returns
+NGA,Nigeria,struggling,0.5,-0.48,-0.59,-0.36,5,Sweet spot investment - maximize returns
+NGA,Nigeria,struggling,1.0,-0.95,-1.18,-0.73,5,Sweet spot investment - maximize returns
+NGA,Nigeria,struggling,1.5,-1.43,-1.77,-1.09,5,Sweet spot investment - maximize returns
+NGA,Nigeria,struggling,2.0,-1.91,-2.36,-1.45,5,Sweet spot investment - maximize returns
+NLD,Netherlands,potential,0.5,-0.63,-0.78,-0.48,5,Sweet spot investment - maximize returns
+NLD,Netherlands,potential,1.0,-1.26,-1.56,-0.96,5,Sweet spot investment - maximize returns
+NLD,Netherlands,potential,1.5,-1.89,-2.34,-1.44,5,Sweet spot investment - maximize returns
+NLD,Netherlands,potential,2.0,-2.52,-3.12,-1.92,5,Sweet spot investment - maximize returns
+NOR,Norway,potential,0.5,-0.44,-0.55,-0.34,5,Sweet spot investment - maximize returns
+NOR,Norway,potential,1.0,-0.88,-1.09,-0.67,5,Sweet spot investment - maximize returns
+NOR,Norway,potential,1.5,-1.32,-1.64,-1.01,5,Sweet spot investment - maximize returns
+NOR,Norway,potential,2.0,-1.76,-2.19,-1.34,5,Sweet spot investment - maximize returns
+NZL,New Zealand,leaders,0.5,-0.44,-0.55,-0.34,5,Sweet spot investment - maximize returns
+NZL,New Zealand,leaders,1.0,-0.88,-1.09,-0.67,5,Sweet spot investment - maximize returns
+NZL,New Zealand,leaders,1.5,-1.32,-1.64,-1.01,5,Sweet spot investment - maximize returns
+NZL,New Zealand,leaders,2.0,-1.76,-2.19,-1.34,5,Sweet spot investment - maximize returns
+PAK,Pakistan,struggling,0.5,-0.41,-0.51,-0.32,5,Sweet spot investment - maximize returns
+PAK,Pakistan,struggling,1.0,-0.83,-1.03,-0.63,5,Sweet spot investment - maximize returns
+PAK,Pakistan,struggling,1.5,-1.24,-1.54,-0.95,5,Sweet spot investment - maximize returns
+PAK,Pakistan,struggling,2.0,-1.66,-2.05,-1.26,5,Sweet spot investment - maximize returns
+PER,Peru,catch_up,0.5,-0.79,-0.97,-0.6,5,Sweet spot investment - maximize returns
+PER,Peru,catch_up,1.0,-1.57,-1.95,-1.2,5,Sweet spot investment - maximize returns
+PER,Peru,catch_up,1.5,-2.36,-2.92,-1.8,5,Sweet spot investment - maximize returns
+PER,Peru,catch_up,2.0,-3.15,-3.9,-2.4,5,Sweet spot investment - maximize returns
+PHL,Philippines,catch_up,0.5,-0.41,-0.51,-0.32,5,Sweet spot investment - maximize returns
+PHL,Philippines,catch_up,1.0,-0.83,-1.03,-0.63,5,Sweet spot investment - maximize returns
+PHL,Philippines,catch_up,1.5,-1.24,-1.54,-0.95,5,Sweet spot investment - maximize returns
+PHL,Philippines,catch_up,2.0,-1.66,-2.05,-1.26,5,Sweet spot investment - maximize returns
+RUS,Russian Federation,catch_up,0.5,-0.92,-1.14,-0.7,5,Sweet spot investment - maximize returns
+RUS,Russian Federation,catch_up,1.0,-1.85,-2.28,-1.41,5,Sweet spot investment - maximize returns
+RUS,Russian Federation,catch_up,1.5,-2.77,-3.43,-2.11,5,Sweet spot investment - maximize returns
+RUS,Russian Federation,catch_up,2.0,-3.69,-4.57,-2.81,5,Sweet spot investment - maximize returns
+SAU,Saudi Arabia,catch_up,0.5,-0.62,-0.76,-0.47,5,Sweet spot investment - maximize returns
+SAU,Saudi Arabia,catch_up,1.0,-1.23,-1.53,-0.94,5,Sweet spot investment - maximize returns
+SAU,Saudi Arabia,catch_up,1.5,-1.85,-2.29,-1.41,5,Sweet spot investment - maximize returns
+SAU,Saudi Arabia,catch_up,2.0,-2.46,-3.05,-1.88,5,Sweet spot investment - maximize returns
+SWE,Sweden,exceptions,0.5,-0.54,-0.66,-0.41,5,Sweet spot investment - maximize returns
+SWE,Sweden,exceptions,1.0,-1.07,-1.33,-0.82,5,Sweet spot investment - maximize returns
+SWE,Sweden,exceptions,1.5,-1.61,-1.99,-1.22,5,Sweet spot investment - maximize returns
+SWE,Sweden,exceptions,2.0,-2.14,-2.65,-1.63,5,Sweet spot investment - maximize returns
+THA,Thailand,catch_up,0.5,-1.06,-1.32,-0.81,5,Sweet spot investment - maximize returns
+THA,Thailand,catch_up,1.0,-2.13,-2.64,-1.62,5,Sweet spot investment - maximize returns
+THA,Thailand,catch_up,1.5,-3.19,-3.95,-2.43,5,Sweet spot investment - maximize returns
+THA,Thailand,catch_up,2.0,-4.26,-5.27,-3.24,5,Sweet spot investment - maximize returns
+TUR,Turkey,catch_up,0.5,-0.79,-0.97,-0.6,5,Sweet spot investment - maximize returns
+TUR,Turkey,catch_up,1.0,-1.57,-1.95,-1.2,5,Sweet spot investment - maximize returns
+TUR,Turkey,catch_up,1.5,-2.36,-2.92,-1.8,5,Sweet spot investment - maximize returns
+TUR,Turkey,catch_up,2.0,-3.15,-3.9,-2.4,5,Sweet spot investment - maximize returns
+USA,United States,leaders,0.5,-0.63,-0.78,-0.48,5,Sweet spot investment - maximize returns
+USA,United States,leaders,1.0,-1.26,-1.56,-0.96,5,Sweet spot investment - maximize returns
+USA,United States,leaders,1.5,-1.89,-2.34,-1.44,5,Sweet spot investment - maximize returns
+USA,United States,leaders,2.0,-2.52,-3.12,-1.92,5,Sweet spot investment - maximize returns
+VNM,Vietnam,catch_up,0.5,-0.43,-0.53,-0.33,5,Sweet spot investment - maximize returns
+VNM,Vietnam,catch_up,1.0,-0.86,-1.06,-0.65,5,Sweet spot investment - maximize returns
+VNM,Vietnam,catch_up,1.5,-1.28,-1.59,-0.98,5,Sweet spot investment - maximize returns
+VNM,Vietnam,catch_up,2.0,-1.71,-2.12,-1.3,5,Sweet spot investment - maximize returns
+ZAF,South Africa,catch_up,0.5,-1.06,-1.32,-0.81,5,Sweet spot investment - maximize returns
+ZAF,South Africa,catch_up,1.0,-2.13,-2.64,-1.62,5,Sweet spot investment - maximize returns
+ZAF,South Africa,catch_up,1.5,-3.19,-3.95,-2.43,5,Sweet spot investment - maximize returns
+ZAF,South Africa,catch_up,2.0,-4.26,-5.27,-3.24,5,Sweet spot investment - maximize returns

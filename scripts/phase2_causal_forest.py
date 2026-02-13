@@ -8,8 +8,6 @@ Phase 2: Causal Forest Analysis
 import pandas as pd
 import numpy as np
 import os
-import warnings
-warnings.filterwarnings('ignore')
 
 from sklearn.model_selection import GroupKFold
 
@@ -19,21 +17,13 @@ from scripts.analysis_data import prepare_analysis_data
 # Try to import econml, provide installation instructions if missing
 try:
     from econml.dml import CausalForestDML
-    print("✓ econml loaded successfully")
 except ImportError:
-    print("❌ econml not found. Installing...")
-    import subprocess
-    subprocess.check_call(['pip', 'install', 'econml'])
-    from econml.dml import CausalForestDML
+    raise ImportError("Please install `econml` before running phase2_causal_forest.py")
 
 try:
     import xgboost as xgb
-    print("✓ xgboost loaded successfully")
 except ImportError:
-    print("❌ xgboost not found. Installing...")
-    import subprocess
-    subprocess.check_call(['pip', 'install', 'xgboost'])
-    import xgboost as xgb
+    raise ImportError("Please install `xgboost` before running phase2_causal_forest.py")
 
 # Configuration
 DATA_DIR = "data"
@@ -169,7 +159,7 @@ def run_causal_forest():
     sig_pct = results_df['Significant'].mean() * 100
     print(f"\n1. Significant heterogeneity detected: {sig_pct:.1f}% of observations")
     
-    print(f"\n2. CATE Distribution:")
+    print("\n2. CATE Distribution:")
     print(f"   Mean:   {results_df['CATE'].mean():.6f}")
     print(f"   Median: {results_df['CATE'].median():.6f}")
     print(f"   Std:    {results_df['CATE'].std():.6f}")
@@ -179,12 +169,12 @@ def run_causal_forest():
     # Direction breakdown
     reducing = (results_df['CATE'] < 0).sum()
     increasing = (results_df['CATE'] > 0).sum()
-    print(f"\n3. Effect Direction:")
+    print("\n3. Effect Direction:")
     print(f"   DCI reduces CO2:    {reducing} observations ({reducing/len(results_df)*100:.1f}%)")
     print(f"   DCI increases CO2:  {increasing} observations ({increasing/len(results_df)*100:.1f}%)")
     
     # Correlation with moderators
-    print(f"\n4. Correlation between CATE and Key Moderators:")
+    print("\n4. Correlation between CATE and Key Moderators:")
     key_mods = ['Control_of_Corruption', 'GDP_per_capita_constant', 
                 'Renewable_energy_consumption_pct', 'Energy_use_per_capita']
     for mod in key_mods:
