@@ -11,7 +11,7 @@ echo "[2/6] Install dependencies"
 "${PYTHON_BIN}" -m pip install -r requirements.txt
 
 echo "[3/6] Run focused tests"
-"${PYTHON_BIN}" -m pytest -q tests/test_analysis_config.py tests/test_docs_consistency.py tests/test_phase4_iv_analysis.py tests/test_phase6_external_validity.py
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 "${PYTHON_BIN}" -m pytest -q tests/test_academic_consistency_guard.py tests/test_phase4_iv_analysis.py tests/test_phase4_placebo.py tests/test_phase5_mechanism.py tests/test_phase6_external_validity.py
 
 echo "[4/6] Run release guards"
 "${PYTHON_BIN}" scripts/preflight_release_check.py

@@ -7,7 +7,7 @@ setup:
 	$(PYTHON) -m pip install -r requirements.txt
 
 test:
-	$(PYTHON) -m pytest -q tests/test_analysis_config.py tests/test_docs_consistency.py tests/test_phase4_iv_analysis.py tests/test_phase6_external_validity.py
+	PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 $(PYTHON) -m pytest -q tests/test_academic_consistency_guard.py tests/test_phase4_iv_analysis.py tests/test_phase4_placebo.py tests/test_phase5_mechanism.py tests/test_phase6_external_validity.py
 
 verify:
 	$(PYTHON) scripts/preflight_release_check.py
