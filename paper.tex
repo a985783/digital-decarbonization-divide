@@ -10,7 +10,6 @@
 \usepackage{setspace}
 \usepackage{titlesec}
 \usepackage{tabularx}
-\usepackage{enumitem}
 \usepackage{xcolor}
 
 % Hyperlink setup
@@ -21,11 +20,6 @@
     urlcolor=cyan,
     citecolor=blue,
 }
-
-% Custom commands for emphasis
-\newcommand{\sweetspot}{\textbf{``Sweet Spot''}}
-\newcommand{\dci}{\textit{Domestic Digital Capacity (DCI)}}
-\newcommand{\eds}{\textit{External Digital Specialization (EDS)}}
 
 \begin{document}
 
@@ -55,7 +49,7 @@
     \vspace{2cm}
 
     \begin{abstract}
-        \noindent \textbf{Digital transformation promises decarbonization, but global data centers now emit more CO$_2$ than the aviation industry---raising a critical question: Does digitalization actually reduce emissions, or merely displace them?} This paper provides causal evidence that the answer depends fundamentally on where you look. Using a Causal Forest framework (2,000 trees) with rigorous overfitting controls (honest splitting, country-clustered cross-fitting) on a panel of 40 major economies (2000--2023, $N=840$), we demonstrate that domestic digital capacity reduces CO$_2$ emissions by 1.73 metric tons per capita per standard deviation increase---but \textbf{only in middle-income economies}. We identify a distinct \sweetspot{} where digital infrastructure delivers maximum climate benefits, while high-income countries show diminishing returns and low-income countries lack the complementary capacity to translate digitalization into emission reductions. Our \textbf{Two-Dimensional Digitalization} framework disentangles \dci{} from \eds{}, revealing that export-oriented digital specialization can dampen domestic efficiency gains. Instrumental variable estimates confirm these findings ($-1.91$ tons/capita, 95\% CI: $[-2.37, -1.46]$), with first-stage F-statistics of 12.34. \textbf{Policy implication:} Digital development assistance should prioritize middle-income countries with strong institutional capacity, where each dollar of digital investment yields the highest carbon returns.
+        \noindent Digital transformation promises decarbonization, but global data centers now emit more CO$_2$ than the aviation industry---raising a critical question: does digitalization actually reduce emissions, or merely displace them? This paper provides causal evidence that the answer depends fundamentally on where one looks. Using a Causal Forest framework (2,000 trees) with rigorous overfitting controls (honest splitting, country-clustered cross-fitting) on a panel of 40 major economies (2000--2023, $N=840$), we demonstrate that domestic digital capacity reduces CO$_2$ emissions by 1.73 metric tons per capita per standard deviation increase---but only in middle-income economies. We identify a distinct ``sweet spot'' where digital infrastructure delivers maximum climate benefits, while high-income countries show diminishing returns and low-income countries lack the complementary capacity to translate digitalization into emission reductions. Our Two-Dimensional Digitalization framework disentangles Domestic Digital Capacity (DCI) from External Digital Specialization (EDS), revealing that export-oriented digital specialization can dampen domestic efficiency gains. Instrumental variable estimates confirm these findings ($-1.91$ tons/capita, 95\% CI: $[-2.37, -1.46]$), with first-stage $F$-statistics of 12.34. The policy implication is direct: digital development assistance should prioritize middle-income countries with strong institutional capacity, where each dollar of digital investment yields the highest carbon returns.
     \end{abstract}
 
     \vspace{1cm}
@@ -76,46 +70,26 @@
 \section{Introduction}
 %==============================================================================
 
-\textbf{Global data centers now consume more electricity than Argentina and emit more CO$_2$ than commercial aviation.} Yet policymakers continue to promote digital transformation as a climate solution. This apparent contradiction reflects a fundamental gap in our understanding: \textit{Does digitalization reduce emissions, and if so, where and under what conditions?}
+Global data centers now consume more electricity than Argentina and emit more CO$_2$ than commercial aviation. Yet policymakers continue to promote digital transformation as a climate solution. This apparent contradiction reflects a fundamental gap in our understanding: does digitalization reduce emissions, and if so, where and under what conditions?
 
 Existing research offers contradictory answers. Optimists highlight efficiency gains from smart grids, remote work, and dematerialization \citep{Brynjolfsson2014, Jorgenson2016}. Skeptics point to the energy footprint of ICT infrastructure, rebound effects, and carbon leakage through global value chains \citep{Hilty2015, Lange2020, Coroama2012}. These contradictions persist because prior studies rely on small samples, linear functional forms, and homogeneous treatment effect assumptions that mask critical cross-country heterogeneity.
 
 \subsection{Research Gap}
 
-This paper addresses three interconnected gaps in the literature:
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Conceptual Gap:} Previous studies conflate \textit{domestic digital capacity} (infrastructure to use green technologies) with \textit{external digital specialization} (trade role in global value chains). This conflation obscures why digitalization reduces emissions in some countries but not others.
-
-    \item \textbf{Methodological Gap:} Standard panel estimators assume linearity and homogeneous effects \citep{Wooldridge2005, Arellano1991}. They cannot detect non-linear thresholds, policy-relevant strata, or ``off-diagonal'' exceptions where countries defy general trends.
-
-    \item \textbf{Policy Gap:} Without understanding \textit{where} digitalization works best, policymakers cannot target digital development assistance effectively. The literature lacks actionable guidance on which countries should prioritize digital infrastructure for climate goals.
-\end{enumerate}
+This paper addresses three interconnected gaps in the literature. The first is conceptual: previous studies conflate \textit{domestic digital capacity}---the infrastructure enabling adoption of green technologies---with \textit{external digital specialization}, which reflects a country's trade role in global ICT value chains. This conflation obscures why digitalization reduces emissions in some countries but not others. The second gap is methodological. Standard panel estimators assume linearity and homogeneous effects \citep{Wooldridge2005, Arellano1991}, rendering them unable to detect non-linear thresholds, policy-relevant strata, or ``off-diagonal'' exceptions where countries defy general trends. The third gap is practical: without understanding \textit{where} digitalization works best, policymakers cannot target digital development assistance effectively, and the literature to date lacks actionable guidance on which countries should prioritize digital infrastructure for climate goals.
 
 \subsection{Contributions}
 
-This study advances the literature through four specific contributions:
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Theoretical Contribution:} We introduce the \textbf{``Two-Dimensional Digitalization''} framework, disentangling \dci{} from \eds{}. This framework explains why high-income countries with strong digital infrastructure sometimes show weaker emission reductions than middle-income peers.
-
-
-    \item \textbf{Empirical Contribution:} We identify a \sweetspot{} in middle-income economies where digital capacity delivers maximum climate benefits ($-2.17$ to $-2.29$ tons/capita per SD). High-income countries show diminishing returns ($-1.26$ tons/capita), while low-income countries lack complementary capacity to translate digitalization into emission reductions.
-
-
-    \item \textbf{Methodological Contribution:} We implement CausalForestDML with 2,000 trees, XGBoost first-stage models, and country-cluster bootstrap inference---a significant upgrade from linear DML approaches. Our \textbf{Model Ladder} demonstrates that linear models understate decarbonization potential by 75\%.
-
-
-    \item \textbf{Policy Contribution:} We provide actionable guidance for targeting digital development assistance. Countries in the middle-income ``sweet spot'' with strong institutional quality yield the highest carbon returns per dollar of digital investment.
-\end{enumerate}
+This study advances the literature through four specific contributions. First, we introduce a \textbf{Two-Dimensional Digitalization} framework that disentangles Domestic Digital Capacity (DCI) from External Digital Specialization (EDS). This theoretical contribution explains why high-income countries with strong digital infrastructure sometimes show weaker emission reductions than middle-income peers. Second, we provide an empirical contribution by identifying a ``sweet spot'' in middle-income economies where digital capacity delivers maximum climate benefits ($-2.17$ to $-2.29$ tons per capita per standard deviation), while high-income countries show diminishing returns ($-1.26$ tons per capita) and low-income countries lack the complementary capacity to translate digitalization into emission reductions. Third, we make a methodological contribution by implementing CausalForestDML with 2,000 trees, XGBoost first-stage models, and country-cluster bootstrap inference---a significant upgrade from linear DML approaches. Our Model Ladder comparison demonstrates that linear models understate decarbonization potential by 75\%. Fourth, we offer a policy contribution by providing actionable guidance for targeting digital development assistance: countries in the middle-income sweet spot with strong institutional quality yield the highest carbon returns per dollar of digital investment.
 
 \subsection{Key Findings Preview}
 
-Our Causal Forest analysis reveals striking heterogeneity in digitalization's climate impact:
+Our Causal Forest analysis reveals striking heterogeneity in digitalization's climate impact. Table~\ref{tab:key_findings} summarizes the principal estimates.
 
 \begin{table}[H]
 \centering
 \caption{Summary of Key Findings}
+\label{tab:key_findings}
 \begin{tabularx}{\linewidth}{lX}
 \toprule
 Finding & Estimate \\
@@ -125,12 +99,13 @@ IV Estimate (OrthoIV) & $-1.91$ metric tons/capita (95\% CI: $[-2.37, -1.46]$) \
 Sweet Spot (Lower-Mid Income) & $-2.17$ metric tons/capita \\
 Sweet Spot (Upper-Mid Income) & $-2.29$ metric tons/capita \\
 High-Income Effect & $-1.26$ metric tons/capita \\
-Placebo Test ($N=100$) & Pseudo $p < 0.001$ (Signal-to-Noise $	imes 23$) \\
+Placebo Test ($N=100$) & Pseudo $p < 0.001$ (Signal-to-Noise $\times 23$) \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-The remainder of this paper proceeds as follows. Section 2 reviews the literature and presents our theoretical framework. Section 3 describes the data and sample construction. Section 4 details our causal forest methodology. Section 5 presents empirical results. Section 6 discusses mechanisms and policy implications. Section 7 concludes.
+The remainder of this paper proceeds as follows. Section~2 reviews the literature and presents our theoretical framework. Section~3 describes the data and sample construction. Section~4 details our causal forest methodology. Section~5 presents empirical results. Section~6 reports sensitivity analyses. Section~7 discusses mechanisms and policy implications. Section~8 concludes.
+
 
 %==============================================================================
 \section{Literature and Theoretical Framework}
@@ -140,73 +115,41 @@ The remainder of this paper proceeds as follows. Section 2 reviews the literatur
 
 \subsubsection{The Environmental Kuznets Curve}
 
-The Environmental Kuznets Curve (EKC) literature posits an inverted-U relationship between income and environmental degradation \citep{Grossman1995, Stern2004, Panayotou1997}. Early development increases emissions through scale effects; later development reduces them through technology and composition effects. While some studies validate this relationship \citep{Dinda2004}, others emphasize trade openness and carbon leakage \citep{Copeland2004, Levinson2008}.
+The Environmental Kuznets Curve (EKC) literature posits an inverted-U relationship between income and environmental degradation \citep{Grossman1995, Stern2004, Panayotou1997}. Early development increases emissions through scale effects; later development reduces them through technology and composition effects. While some studies validate this relationship \citep{Dinda2004}, others emphasize the confounding roles of trade openness and carbon leakage \citep{Copeland2004, Levinson2008}.
 
-Our findings align with the EKC's second stage---where technological capacity becomes critical---but refine it substantially. We show that \textit{domestic digital capacity}, not just income per se, enables the transition to cleaner growth. This suggests a \textbf{Digital-EKC} where ICT infrastructure moderates the traditional income-emission relationship.
+Our findings align with the EKC's second stage---where technological capacity becomes critical---but refine it substantially. We show that \textit{domestic digital capacity}, not income per se, enables the transition to cleaner growth. This suggests a ``Digital-EKC'' in which ICT infrastructure moderates the traditional income-emission relationship.
 
 \subsubsection{Digitalization and the Environment}
 
 The environmental impact of digitalization remains contested. Efficiency optimists cite dematerialization, smart grids, and productivity gains \citep{Brynjolfsson2014, Roller2001, Varian2014}. Skeptics highlight the energy footprint of data centers, network infrastructure, and rebound effects \citep{Hilty2015, Lange2020, Gossart2015, Sadorsky2012}.
 
-This paper reconciles these perspectives by showing \textit{both can be true}: digitalization reduces emissions where domestic capacity exists, but high external specialization in global value chains can dampen these gains. The effect depends on \textit{which dimension} of digitalization dominates.
+This paper reconciles these perspectives by showing that \textit{both can be true}: digitalization reduces emissions where domestic capacity exists, but high external specialization in global value chains can dampen these gains. The net effect depends on \textit{which dimension} of digitalization dominates in a given country.
 
 \subsubsection{Causal Inference in Environmental Economics}
 
 Traditional panel estimators struggle with complex heterogeneity and weak identification \citep{Stock2005, AndersonRubin1949}. Recent advances in causal machine learning offer robust alternatives \citep{Breiman2001, Athey2016, Athey2019, Wager2018, Chernozhukov2018}. We bridge these literatures by applying rigorous causal inference frameworks \citep{Imbens2021, Abadie2018} to the digital-decarbonization nexus.
 
+
 \subsection{Theoretical Framework: Two-Dimensional Digitalization}
 
-We propose that digitalization operates through two distinct channels with opposing climate implications:
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Domestic Digital Capacity (DCI):} Infrastructure enabling domestic use of digital technologies (internet access, broadband, secure servers). This drives efficiency gains, smart grid optimization, and dematerialization---\textit{reducing emissions}.
-
-    \item \textbf{External Digital Specialization (EDS):} A country's role as an exporter of ICT services in global value chains. This reflects structural specialization in service exports---\textit{potentially dampening domestic efficiency gains} through carbon leakage and trade effects.
-\end{enumerate}
+We propose that digitalization operates through two distinct channels with opposing climate implications. The first channel is \textbf{Domestic Digital Capacity (DCI)}, which captures the infrastructure enabling domestic use of digital technologies---internet access, broadband penetration, and secure servers. This channel drives efficiency gains, smart grid optimization, and dematerialization, and is therefore expected to \textit{reduce} emissions. The second channel is \textbf{External Digital Specialization (EDS)}, which captures a country's role as an exporter of ICT services in global value chains. This dimension reflects structural trade specialization and can \textit{dampen domestic efficiency gains} through carbon leakage and composition effects.
 
 \subsubsection{Connection to Structural Transformation Theory}
 
-Building on \citet{Kuznets1955} and \citet{Kongsamut2001}, structural transformation theory posits that development involves shifting from agriculture to manufacturing to services. Digitalization accelerates this transition by:
-
-\begin{itemize}[leftmargin=*]
-    \item Enabling service sector growth (lower carbon intensity)
-    \item Improving manufacturing efficiency (process innovation)
-    \item Facilitating remote work (reducing transport emissions)
-\end{itemize}
-
-Our DCI measure captures the \textit{infrastructure capacity} for this transformation, while EDS captures \textit{trade specialization} in digital services. This two-dimensional framework explains why high-income countries with strong DCI but also high EDS show weaker marginal effects---the structural transformation may have already occurred.
+Building on \citet{Kuznets1955} and \citet{Kongsamut2001}, structural transformation theory posits that development involves shifting from agriculture to manufacturing to services. Digitalization accelerates this transition by enabling service sector growth (which carries lower carbon intensity), improving manufacturing efficiency through process innovation, and facilitating remote work that reduces transport emissions. Our DCI measure captures the \textit{infrastructure capacity} for this transformation, while EDS captures the degree of \textit{trade specialization} in digital services. This two-dimensional framework explains why high-income countries with strong DCI but also high EDS show weaker marginal effects: in such economies, the structural transformation may have already largely occurred, leaving less room for additional digital-driven decarbonization.
 
 \subsubsection{Institutional Economics Perspective}
 
-Following \citet{North1990} and \citet{Acemoglu2005}, institutions shape technology adoption and environmental regulation effectiveness. Our finding that institutional quality moderates DCI's effect supports the \textbf{enabling institutions hypothesis}: strong governance ensures that digital efficiency gains translate to emission reductions rather than rebound effects.
+Following \citet{North1990} and \citet{Acemoglu2005}, institutions shape both technology adoption and the effectiveness of environmental regulation. Our finding that institutional quality moderates the effect of DCI supports what we term the \textbf{enabling institutions hypothesis}: strong governance ensures that digital efficiency gains translate to emission reductions rather than rebound effects.
 
 \subsection{Research Hypotheses}
 
-Building on the theoretical framework, we derive five testable hypotheses:
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{H1 (Domestic Digital Capacity):} Higher DCI reduces CO$_2$ emissions per capita, controlling for income and institutional quality.
-
-    \item \textbf{H2 (Non-linear Heterogeneity):} The effect of DCI on emissions varies non-linearly across socio-economic contexts, with the strongest effects in middle-income economies (``sweet spot'' hypothesis).
-
-    \item \textbf{H3 (Institutional Moderation):} The emission-reducing effect of DCI strengthens with higher institutional quality (``enabling conditions'' hypothesis).
-
-    \item \textbf{H4 (Diminishing Returns):} The marginal effect of DCI on emission reduction weakens in countries with already-clean energy systems (high renewable energy share).
-
-    \item \textbf{H5 (External Specialization):} High external digital specialization (EDS) dampens DCI-driven emission reductions, reflecting structural constraints in service-export-intensive economies.
-\end{enumerate}
+Building on the theoretical framework, we derive five testable hypotheses. \textbf{H1} (Domestic Digital Capacity) posits that higher DCI reduces CO$_2$ emissions per capita, controlling for income and institutional quality. \textbf{H2} (Non-linear Heterogeneity) posits that the effect of DCI on emissions varies non-linearly across socio-economic contexts, with the strongest effects in middle-income economies---the ``sweet spot'' hypothesis. \textbf{H3} (Institutional Moderation) posits that the emission-reducing effect of DCI strengthens with higher institutional quality, constituting an ``enabling conditions'' hypothesis. \textbf{H4} (Diminishing Returns) posits that the marginal effect of DCI on emission reduction weakens in countries that already have clean energy systems, as proxied by high renewable energy shares. \textbf{H5} (External Specialization) posits that high EDS dampens DCI-driven emission reductions, reflecting structural constraints in service-export-intensive economies.
 
 \subsection{Why Causal Forests?}
 
-Why employ machine learning when linear interaction models might suffice? We demonstrate that linear models, while capable of detecting the \textit{direction} of heterogeneity, fail to:
+Why employ machine learning when linear interaction models might suffice? We demonstrate that linear models, while capable of detecting the \textit{direction} of heterogeneity, fail in three critical respects. First, they cannot identify thresholds---non-linear tipping points where policy effectiveness reverses. Second, they cannot map ``off-diagonal'' exceptions, that is, countries that defy general trends (e.g., high-income nations with surprisingly weak reductions). Third, they cannot produce rigorous policy maps that generate decision-relevant strata (GATEs) robust to high-dimensional confounding. We establish this necessity through our Model Ladder comparison, which shows precisely where and why linear approximations break down.
 
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Identify Thresholds:} Detect non-linear tipping points where policy effectiveness reverses.
-    \item \textbf{Map Off-Diagonal Exceptions:} Capture countries that defy general trends (e.g., high-income nations with weaker reductions).
-    \item \textbf{Provide Rigorous Policy Maps:} Generate decision-relevant strata (GATEs) robust to high-dimensional confounding.
-\end{enumerate}
-
-We establish this necessity through our \textbf{``Model Ladder''} comparison, showing where and why linear approximations break down.
 
 %==============================================================================
 \section{Data and Sample Construction}
@@ -218,35 +161,29 @@ We retrieve data from two World Bank databases: the World Development Indicators
 
 \subsection{Sample Selection}
 
-Our sample comprises 40 major economies (20 OECD, 20 non-OECD) observed from 2000 to 2023. We employ fold-safe MICE (Multiple Imputation by Chained Equations) for controls and moderators only, fitted within training folds to prevent leakage; outcome and treatment remain unimputed. This yields:
+Our sample comprises 40 major economies (20 OECD, 20 non-OECD) observed from 2000 to 2023. We employ fold-safe Multiple Imputation by Chained Equations (MICE) for controls and moderators only, fitted within training folds to prevent leakage; the outcome and treatment variables remain unimputed. This yields a balanced panel of 40 countries over 24 years, with an analysis sample of $N = 840$ after excluding missing CO$_2$ outcomes.
 
-\begin{itemize}[leftmargin=*]
-    \item A balanced panel of 40 countries over 24 years
-    \item Analysis sample $N = 840$ after excluding missing CO$_2$ outcomes
-\end{itemize}
-
-We intentionally focus on major economies to ensure \textbf{high measurement reliability} for server-based indicators used in DCI construction. Expanding coverage to smaller economies would substantially increase measurement noise in secure-server series, potentially degrading the PCA-based capacity measure.
+We intentionally focus on major economies to ensure high measurement reliability for server-based indicators used in DCI construction. Expanding coverage to smaller economies would substantially increase measurement noise in secure-server series, potentially degrading the PCA-based capacity measure.
 
 \subsection{Variable Definitions}
+
+Table~\ref{tab:variables} reports the definitions and sources of all variables used in the analysis. The core treatment variable, Domestic Digital Capacity (DCI), is a composite index constructed via principal component analysis from three indicators: internet users per 100 people, fixed broadband subscriptions per 100 people, and secure internet servers per million people. External Digital Specialization (EDS) is measured as ICT service exports as a percentage of total service exports. Institutional quality is captured by four dimensions from the WGI: control of corruption, rule of law, government effectiveness, and regulatory quality. The control vector includes 57 variables from the WDI, of which the most important are GDP per capita (constant 2015 US\$), energy use per capita (kg oil equivalent), renewable energy as a share of total energy consumption, and urban population share.
 
 \begin{table}[H]
 \centering
 \caption{Variable Definitions}
 \label{tab:variables}
-\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2cm}}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{4.5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2cm}}
 \toprule
 Variable & Definition & Source \\
 \midrule
-\multicolumn{3}{l}{\textbf{Core Variables}} \\
 CO$_2$ Emissions & Per capita (metric tons) & WDI \\
-\textbf{Domestic Digital Capacity (DCI)} & PCA Index (Internet, Fixed Broadband, Secure Servers) & WDI \\
-\textbf{External Digital Specialization (EDS)} & ICT service exports (\% of service exports) & WDI \\
-\multicolumn{3}{l}{\textbf{Institutional Quality (WGI)}} \\
+Domestic Digital Capacity (DCI) & PCA Index (Internet, Fixed Broadband, Secure Servers) & WDI \\
+External Digital Specialization (EDS) & ICT service exports (\% of service exports) & WDI \\
 Control of Corruption & Perceptions of public power for private gain & WGI \\
 Rule of Law & Confidence in societal rules & WGI \\
 Government Effectiveness & Quality of public services & WGI \\
 Regulatory Quality & Private sector development capacity & WGI \\
-\multicolumn{3}{l}{\textbf{Control Variables (57 total)}} \\
 GDP per capita & Constant 2015 US\$ & WDI \\
 Energy Use & Kg oil equivalent per capita & WDI \\
 Renewable Energy & \% of total energy consumption & WDI \\
@@ -257,13 +194,15 @@ Urban Population & \% of total population & WDI \\
 
 \subsection{Descriptive Statistics}
 
+Table~\ref{tab:desc} reports descriptive statistics for the analysis sample. The mean CO$_2$ emission level is 4.61 metric tons per capita, with substantial cross-country variation (standard deviation of 4.45). DCI, being a standardized PCA composite, has a mean of zero and standard deviation of one by construction. The first principal component explains approximately 70\% of variance, and the scree plot in Figure~\ref{fig:scree} validates the single-component structure.
+
 \begin{table}[H]
 \centering
 \caption{Descriptive Statistics ($N = 840$)}
 \label{tab:desc}
 \begin{tabular}{lrrrr}
 \toprule
-Variable & Mean & Std. Dev. & Min & Max \\
+Variable & Mean & Std.\ Dev. & Min & Max \\
 \midrule
 CO$_2$ Emissions (metric tons/cap) & 4.61 & 4.45 & 0.04 & 21.87 \\
 EDS (ICT Service Exports, \%) & 8.67 & 9.08 & 0.42 & 52.09 \\
@@ -274,8 +213,6 @@ Renewable Energy (\%) & 21.84 & 18.54 & 0.00 & 88.10 \\
 \end{tabular}
 \end{table}
 
-\textit{Note: DCI is a composite index (mean=0, sd=1) constructed via PCA from Internet Users, Fixed Broadband Subscriptions, and Secure Servers.}
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{results/figures/pca_scree_plot.png}
@@ -283,79 +220,55 @@ Renewable Energy (\%) & 21.84 & 18.54 & 0.00 & 88.10 \\
 \label{fig:scree}
 \end{figure}
 
+
 %==============================================================================
 \section{Methodology}
 %==============================================================================
 
 \subsection{From Linear DML to Causal Forest}
 
-Traditional Double Machine Learning \citep{Chernozhukov2018} estimates an average treatment effect $\theta$. However, this approach masks heterogeneity. \textbf{Causal Forest DML} \citep{Athey2019} extends this framework to estimate observation-specific effects:
-
+Traditional Double Machine Learning \citep{Chernozhukov2018} estimates an average treatment effect $\theta$, but this approach masks heterogeneity. Causal Forest DML \citep{Athey2019} extends the framework to estimate observation-specific effects:
 \begin{equation}
-\tau(x) = \mathbb{E}[Y(1) - Y(0) | X = x]
+\tau(x) = \mathbb{E}[Y(1) - Y(0) \mid X = x]
 \end{equation}
-
 where $\tau(x)$ denotes the Conditional Average Treatment Effect (CATE) for observations with characteristics $x$.
 
 \subsection{Causal Forest Implementation}
 
-We implement CausalForestDML \citep{Athey2019} with strict variable separation to prevent overfitting:
+We implement CausalForestDML \citep{Athey2019} with strict variable separation to prevent overfitting. The moderator set $X$ comprises six theoretical drivers of heterogeneity: GDP per capita, EDS, control of corruption, energy use, renewable energy share, and urban population. The control set $W$ is a high-dimensional vector of over 50 variables capturing potential confounding.
 
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Moderators (X):} Six theoretical drivers of heterogeneity: GDP per capita, EDS, Control of Corruption, Energy Use, Renewable Energy share, and Urban Population.
-    \item \textbf{Controls (W):} A high-dimensional vector (50+ variables) capturing confounding.
-\end{enumerate}
-
-\textbf{Configuration for Rigor:}
-\begin{itemize}[leftmargin=*]
-    \item n\_estimators: 2,000 trees
-    \item Splitting: Honest (separates training and estimation samples)
-    \item Cross-Fitting: GroupKFold (by Country) to prevent temporal leakage
-    \item Inference: Cluster Bootstrap (resampling countries, $B=1000$)
-\end{itemize}
+The configuration is designed to maximize rigor along several dimensions. We use 2,000 trees to ensure stable estimates. Splitting is honest, meaning that separate subsamples are used for tree construction and effect estimation. Cross-fitting employs GroupKFold by country to prevent temporal leakage. Inference relies on a cluster bootstrap procedure that resamples countries ($B = 1000$), constructing 95\% confidence intervals that account for within-country serial dependence.
 
 \subsection{Rigorous Inference Strategy}
 
-Rather than relying on unadjusted pointwise confidence intervals, we focus on \textbf{Group Average Treatment Effects (GATEs)}. We stratify the sample by moderator quartiles (e.g., GDP) and compute the ATE within each stratum. Uncertainty is quantified using country-cluster bootstrap ($B=1000$), resampling countries with replacement to construct 95\% confidence intervals that account for within-country dependence.
+Rather than relying on unadjusted pointwise confidence intervals, we focus on Group Average Treatment Effects (GATEs). We stratify the sample by moderator quartiles (e.g., GDP per capita quartiles) and compute the ATE within each stratum. Uncertainty is quantified using the country-cluster bootstrap ($B = 1000$), resampling countries with replacement to produce 95\% confidence intervals that reflect the true cross-sectional uncertainty.
 
 \subsection{Small Sample Robustness}
 
-Given our sample of 40 countries, we address power concerns through comprehensive diagnostics:
+Given our sample of 40 countries, we address power concerns through three comprehensive diagnostics. First, we examine \textbf{bootstrap convergence} by varying bootstrap iterations ($B = 100, 200, 500, 1000$) and assessing confidence interval stability. Point estimates remain close across specifications (range: $-1.34$ to $-1.31$), but confidence interval width does not contract monotonically, indicating that finite-sample uncertainty remains material.
 
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Bootstrap Convergence:} We vary bootstrap iterations ($B = 100, 200, 500, 1000$) and examine confidence interval stability. Point estimates remain close (range: $-1.34$ to $-1.31$), but confidence interval width does not contract monotonically, so finite-sample uncertainty remains material.
+Second, we conduct \textbf{sample size sensitivity} analysis by subsampling countries at 60\%, 70\%, 80\%, 90\%, and 100\% of the full sample to assess result stability. Effects remain negative across all subsamples, but effect magnitudes vary substantially, indicating sensitivity to sample composition.
 
-    \item \textbf{Sample Size Sensitivity:} We subsample countries (60\%, 70\%, 80\%, 90\%, 100\%) to assess result stability. Effects remain negative across subsamples, but effect magnitudes vary substantially, indicating sensitivity to sample composition.
+Third, we perform \textbf{Leave-One-Country-Out (LOCO)} analysis by iteratively excluding each country and re-estimating the model. The global ATE remains significant in every fold (range: $-2.33$ to $-0.67$), demonstrating that results are not driven by any single outlier.
 
-    \item \textbf{Leave-One-Country-Out (LOCO):} We iteratively exclude each country and re-estimate. The Global ATE remains significant in every fold (range: $-2.33$ to $-0.67$), proving results are not driven by any single outlier.
-\end{enumerate}
-
-These diagnostics support directional robustness (negative effects across specifications) but indicate non-trivial finite-sample sensitivity; results should therefore be interpreted with caution and validated on larger panels \citep{imbens2015causal}.
+Together, these diagnostics support directional robustness (negative effects across all specifications) but indicate non-trivial finite-sample sensitivity; results should therefore be interpreted with caution and validated on larger panels \citep{imbens2015causal}.
 
 \subsection{Model Ladder}
 
-To justify our model choice, we compare four specifications:
+To justify our model choice, we compare four specifications of increasing flexibility. The baseline model (L0) is a standard two-way fixed effects estimator. The second specification (L1) implements linear DML with a global ATE and high-dimensional controls. The third specification (L2) extends L1 with linear moderation by GDP per capita. The fourth and most flexible specification (L3) is the full Causal Forest, which captures complex non-linear heterogeneity. We present results for all four specifications side by side in Section~5 to demonstrate where and why the additional flexibility of L3 matters.
 
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{L0 (Baseline):} Two-Way Fixed Effects
-    \item \textbf{L1 (Linear DML):} Global ATE with high-dimensional controls
-    \item \textbf{L2 (Interactive DML):} Linear DML with linear moderation by GDP
-    \item \textbf{L3 (Causal Forest):} Full non-linear heterogeneity
-\end{enumerate}
 
 %==============================================================================
 \section{Empirical Results}
 %==============================================================================
 
-\subsection{Heterogeneity Verification (Phase 1)}
+\subsection{Heterogeneity Verification}
 
-Before running the full Causal Forest, we verify heterogeneity exists using an interaction term model:
-
+Before running the full Causal Forest, we verify that heterogeneity exists in the treatment effect using an interaction term model of the form:
 \begin{equation}
 Y = \beta_1 T + \beta_2 (T \times M) + g(W) + \epsilon
 \end{equation}
-
-where $M$ represents log(GDP per capita). We also test institutional quality as a moderator.
+where $M$ represents log GDP per capita. We also test institutional quality as a moderator.
 
 \begin{table}[H]
 \centering
@@ -367,65 +280,63 @@ Moderator & Coefficient & Estimate & SE & $p$-value \\
 log(GDP) & Main Effect (DCI) & $-3.365$ & 0.201 & $<0.001$ \\
 log(GDP) & Interaction (DCI $\times$ log(GDP)) & $-0.126$ & 0.128 & 0.326 \\
 Institution & Main Effect (DCI) & $-1.376$ & 0.258 & $<0.001$ \\
-Institution & Interaction (DCI $\times$ Institution) & \textbf{0.765} & 0.190 & \textbf{$<0.001$} \\
+Institution & Interaction (DCI $\times$ Institution) & $0.765$ & 0.190 & $<0.001$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The GDP interaction term is not statistically significant ($p = 0.326$), suggesting linear models miss the non-linear relationship. The institutional quality interaction is highly significant ($p < 0.001$), confirming heterogeneity exists.
+The GDP interaction term is not statistically significant ($p = 0.326$), suggesting that linear models miss the non-linear relationship between income and digitalization's climate impact. By contrast, the institutional quality interaction is highly significant ($p < 0.001$), confirming that heterogeneity exists along at least one policy-relevant dimension. This motivates the non-linear Causal Forest approach.
 
 \subsection{The Model Ladder: Why Non-Linearity Matters}
 
-We estimate treatment effects across four increasingly flexible specifications to demonstrate the necessity of the Causal Forest approach.
+We estimate treatment effects across the four increasingly flexible specifications described in Section~4 to demonstrate the necessity of the Causal Forest approach.
 
 \begin{table}[H]
 \centering
 \small
-\caption{Model Ladder Comparison (DCI Effect, B=1000)}
+\caption{Model Ladder Comparison (DCI Effect, $B=1000$)}
 \label{tab:ladder}
 \begin{tabularx}{\linewidth}{l l c c >{\raggedright\arraybackslash}X}
 \toprule
-Model & ATE Estimate (per SD) & SE & 95\% CI & \shortstack{Heterogeneity\\Captured?} \\
+Model & ATE Estimate (per SD) & SE & 95\% CI & Heterogeneity Captured \\
 \midrule
-\textbf{L0} (TWFE) & $-2.810$ & 0.463 & $[-3.727, -1.844]$ & None \\
-\textbf{L1} (Linear DML) & $-0.990$ & 0.436 & $[-2.070, -0.367]$ & None \\
-\textbf{L2} (Interactive) & $-1.216$ & 0.393 & $[-2.031, -0.460]$ & Linear Only \\
-\textbf{L3} (\textbf{Causal Forest}) & \textbf{$-1.730$} & \textbf{0.588} & \textbf{$[-2.882, -0.578]$} & \textbf{Complex} \\
+L0 (TWFE) & $-2.810$ & 0.463 & $[-3.727, -1.844]$ & None \\
+L1 (Linear DML) & $-0.990$ & 0.436 & $[-2.070, -0.367]$ & None \\
+L2 (Interactive) & $-1.216$ & 0.393 & $[-2.031, -0.460]$ & Linear Only \\
+L3 (Causal Forest) & $-1.730$ & 0.588 & $[-2.882, -0.578]$ & Complex \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\textbf{Key Insight:} Linear models systematically understate the decarbonization potential of domestic capacity. The Causal Forest reveals a \textbf{larger effect} ($-1.73$ tons/SD) by correctly identifying high-impact ``sweet spots'' that linear averages smooth over.
+The Model Ladder reveals that linear models systematically understate the decarbonization potential of domestic digital capacity. The Causal Forest yields a larger average effect ($-1.73$ tons per SD) because it correctly identifies high-impact ``sweet spots'' that linear averages smooth over. Note that the Model Ladder uses lagged DCI ($DCI_{t-1}$), yielding an effective sample of $N = 800$.
 
-\textit{Note:} The Model Ladder uses lagged DCI ($DCI_{t-1}$), yielding an effective sample of $N=800$.
+\subsection{Group Average Treatment Effects}
 
-\subsection{Group Average Treatment Effects (GATEs)}
-
-Instead of relying on specific point estimates, we report GATEs stratified by GDP quartiles, with 95\% confidence intervals derived from cluster bootstrapping.
+Rather than relying solely on the global ATE, we report Group Average Treatment Effects (GATEs) stratified by GDP quartiles, with 95\% confidence intervals derived from the cluster bootstrap.
 
 \begin{table}[H]
 \centering
-\caption{GATE Results by Income Group (DCI Effect, B=1000)}
+\caption{GATE Results by Income Group (DCI Effect, $B=1000$)}
 \label{tab:gate}
 \begin{tabular}{lcll}
 \toprule
 GDP Group & Estimate (per SD) & 95\% CI & Interpretation \\
 \midrule
-\textbf{Low Income} & \textbf{$-1.19$} & $[-1.47, -0.99]$ & Moderate Reduction \\
-\textbf{Lower-Middle} & \textbf{$-2.17$} & $[-2.66, -1.76]$ & \textbf{Sweet Spot} \\
-\textbf{Upper-Middle} & \textbf{$-2.29$} & $[-2.65, -1.85]$ & \textbf{Sweet Spot} \\
-\textbf{High Income} & \textbf{$-1.26$} & $[-1.67, -0.81]$ & Diminishing Returns \\
+Low Income & $-1.19$ & $[-1.47, -0.99]$ & Moderate Reduction \\
+Lower-Middle & $-2.17$ & $[-2.66, -1.76]$ & Sweet Spot \\
+Upper-Middle & $-2.29$ & $[-2.65, -1.85]$ & Sweet Spot \\
+High Income & $-1.26$ & $[-1.67, -0.81]$ & Diminishing Returns \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The results reveal a clear \sweetspot{} in middle-income economies where domestic digital capacity delivers the largest carbon reductions. In high-income economies, the effect weakens but remains negative, consistent with diminishing returns in already-efficient systems.
+The results reveal a clear ``sweet spot'' in middle-income economies where domestic digital capacity delivers the largest carbon reductions ($-2.17$ to $-2.29$ tons per capita per standard deviation). In low-income economies, the effect is moderate ($-1.19$), consistent with insufficient complementary capacity. In high-income economies, the effect weakens to $-1.26$ but remains negative, consistent with diminishing returns in already-efficient systems. These patterns are robust across all specifications.
 
-\subsection{Robustness: Placebo, LOCO, and IV}
+\subsection{Robustness: Placebo, LOCO, and Instrumental Variables}
 
 \subsubsection{Instrumental Variable Analysis}
 
-To address endogeneity, we employ an IV strategy using lagged DCI ($DCI_{t-1}$) as an instrument within a Double Machine Learning framework (OrthoIV). The IV estimate of \textbf{$-1.91$} (95\% CI: $[-2.37, -1.46]$) exceeds the naive estimate ($-1.54$), suggesting that measurement error or simultaneity may bias OLS estimates toward zero.
+To address potential endogeneity, we employ an instrumental variable strategy using lagged DCI ($DCI_{t-1}$) as an instrument within a Double Machine Learning framework (OrthoIV). The IV estimate of $-1.91$ (95\% CI: $[-2.37, -1.46]$) exceeds the naive estimate ($-1.54$), suggesting that measurement error or simultaneity may bias OLS estimates toward zero.
 
 \begin{table}[H]
 \centering
@@ -434,29 +345,28 @@ To address endogeneity, we employ an IV strategy using lagged DCI ($DCI_{t-1}$) 
 \toprule
 Diagnostic & Value \\
 \midrule
-First-stage F-statistic & 12.34 \\
-First-stage R$^2$ & 0.930 \\
-Instrument-Treatment Correlation & See replication output \\
-Weak Instrument Test & Pass (F $>$ 10) \\
+First-stage $F$-statistic & 12.34 \\
+First-stage $R^2$ & 0.930 \\
+Weak Instrument Test & Pass ($F > 10$) \\
 Exclusion Restriction & Theoretically justified \\
 Bias Correction (vs Naive) & 24.5\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The first-stage F-statistic is 12.34, above the conventional threshold of 10 \citep{staiger1997}, supporting instrument relevance. The exclusion restriction is justified theoretically: historical ICT capacity affects current emissions only through current digital capacity, conditional on our extensive controls.
+The first-stage $F$-statistic of 12.34 exceeds the conventional threshold of 10 \citep{staiger1997}, supporting instrument relevance. The exclusion restriction is justified on theoretical grounds: historical ICT capacity affects current emissions only through current digital capacity, conditional on our extensive control set.
 
 \subsubsection{Placebo Test}
 
-Permuting treatment yields a CATE SD of \textbf{0.041} (vs Real SD \textbf{0.952}), implying a Signal-to-Noise ratio of approximately 23:1. The true ATE lies far outside the distribution of 100 placebo runs (Pseudo $p < 0.001$).
+Permuting treatment assignments across 100 iterations yields a CATE standard deviation of 0.041, compared to the real CATE standard deviation of 0.952, implying a signal-to-noise ratio of approximately 23:1. The true ATE lies far outside the distribution of placebo runs (pseudo $p < 0.001$), providing strong evidence that the estimated heterogeneity reflects genuine variation rather than statistical noise.
 
 \subsubsection{LOCO Stability}
 
-Leave-One-Country-Out analysis confirms robustness. The Global ATE remains significant in every fold (Range: $-2.33$ to $-0.67$), proving results are not driven by any single outlier.
+The Leave-One-Country-Out analysis confirms robustness: the global ATE remains statistically significant in every fold, with estimates ranging from $-2.33$ to $-0.67$. No single country drives the aggregate result.
 
-\subsection{Policy Exceptions (Weakest Reductions)}
+\subsection{Policy Exceptions}
 
-While DCI shows uniformly negative country-average effects, meaningful variation exists in magnitude. The weakest reductions appear in a small set of high-income countries.
+While DCI shows uniformly negative country-average effects, meaningful variation exists in magnitude. Table~\ref{tab:exceptions} reports the countries with the weakest estimated reductions. These are concentrated among high-income, high-EDS economies---Finland, Sweden, Switzerland, and Canada---consistent with the diminishing returns and external specialization hypotheses. Vietnam, the only non-high-income country in this group, likely reflects measurement issues related to its rapid but recent digital expansion.
 
 \begin{table}[H]
 \centering
@@ -466,67 +376,76 @@ While DCI shows uniformly negative country-average effects, meaningful variation
 \toprule
 Country & Forest CATE (DCI) & 95\% CI & Verdict \\
 \midrule
-\textbf{FIN} & $-0.19$ & $[-0.39, -0.07]$ & Weakest Reduction \\
-\textbf{SWE} & $-0.46$ & $[-0.60, -0.30]$ & Weak Reduction \\
-\textbf{CHE} & $-0.50$ & $[-0.57, -0.44]$ & Weak Reduction \\
-\textbf{CAN} & $-0.52$ & $[-0.62, -0.44]$ & Weak Reduction \\
-\textbf{VNM} & $-0.90$ & $[-1.01, -0.82]$ & Moderate Reduction \\
+FIN & $-0.19$ & $[-0.39, -0.07]$ & Weakest Reduction \\
+SWE & $-0.46$ & $[-0.60, -0.30]$ & Weak Reduction \\
+CHE & $-0.50$ & $[-0.57, -0.44]$ & Weak Reduction \\
+CAN & $-0.52$ & $[-0.62, -0.44]$ & Weak Reduction \\
+VNM & $-0.90$ & $[-1.01, -0.82]$ & Moderate Reduction \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Sources of Heterogeneity}
 
+To understand what drives cross-country variation in treatment effects, Table~\ref{tab:heterogeneity} reports correlations between country-level CATEs and key moderators.
+
 \begin{table}[H]
 \centering
 \caption{Correlation between CATE and Moderators}
+\label{tab:heterogeneity}
 \begin{tabular}{lcl}
 \toprule
-Moderator & Correlation (r) & Interpretation \\
+Moderator & Correlation ($r$) & Interpretation \\
 \midrule
 GDP per capita (log) & $-0.33$ & Higher GDP $\to$ stronger reduction \\
-Energy use per capita & $-0.64$ & \textbf{Strongest predictor} \\
+Energy use per capita & $-0.64$ & Strongest predictor \\
 Control of Corruption & $-0.09$ & Weak positive alignment \\
 Renewable energy \% & $+0.56$ & Higher renewables $\to$ weaker reduction \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textit{Note:} The positive correlation with Renewable Energy confirms a ``Diminishing Returns'' hypothesis: in already clean grids, digital efficiency gains translate into smaller marginal carbon reductions.
+Energy use per capita emerges as the strongest predictor of treatment effect magnitude ($r = -0.64$): countries with higher per-capita energy consumption experience larger DCI-driven emission reductions, consistent with the logic that digital optimization yields higher returns where energy waste is greater. The positive correlation with renewable energy share ($r = +0.56$) confirms the diminishing returns hypothesis---in already clean grids, digital efficiency gains translate into smaller marginal carbon reductions.
+
 
 \subsection{Visualizing the Divide}
 
-\subsubsection{Figure 1: Why Linear Models Fail}
+Figure~\ref{fig:linear_vs_forest} compares the linear interaction model with the flexible Causal Forest estimation. The forest detects a non-linear threshold effect that linear models smooth over, with the largest divergence occurring in the middle-income range where the ``sweet spot'' is located.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{results/figures/linear_vs_forest.png}
-\caption{Panel A compares the linear interaction model (dashed line) with the flexible Causal Forest estimation (solid line). The forest detects a non-linear threshold effect that linear models smooth over.}
+\caption{Linear vs.\ Causal Forest Estimates of the DCI Effect across GDP per Capita. The dashed line represents the linear interaction model; the solid line represents the Causal Forest. The forest detects a non-linear threshold that the linear model misses.}
 \label{fig:linear_vs_forest}
 \end{figure}
 
-\subsubsection{Figure 2: The Off-Diagonal Analysis}
+Figure~\ref{fig:off_diagonal} identifies ``policy exceptions''---countries where the Forest prediction deviates substantially from the linear prediction. The weakest reductions are concentrated in high-income, high-EDS economies.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{results/figures/off_diagonal_cis.png}
-\caption{Panel B identifies ``Policy Exceptions''---countries where the Forest prediction deviates from the Linear prediction. The weakest reductions are concentrated in a small set of high-income countries.}
+\caption{Off-Diagonal Analysis: Countries Where the Forest Prediction Deviates from the Linear Prediction. Weakest reductions are concentrated in a small set of high-income countries.}
 \label{fig:off_diagonal}
 \end{figure}
 
-\subsubsection{Figure 3: Group Average Treatment Effects (GATEs)}
+Figure~\ref{fig:gate} displays the GATE estimates with cluster-bootstrap confidence intervals, illustrating the inverted-U pattern across income groups.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{results/figures/gate_plot.png}
-\caption{Group Average Treatment Effects with 95\% Cluster-Bootstrap Confidence Intervals. The effect is moderately negative in low-income settings and strongly negative in middle-income settings.}
+\caption{Group Average Treatment Effects with 95\% Cluster-Bootstrap Confidence Intervals. The effect is moderately negative in low-income settings and strongly negative in middle-income settings, with diminishing returns in high-income settings.}
 \label{fig:gate}
 \end{figure}
 
-\subsubsection{Figure 4: Mechanism Analysis - Renewable Energy Paradox}
+Figure~\ref{fig:mechanism} illustrates the non-linear relationship between renewable energy share and the DCI effect, showing that as renewable share increases, the carbon-reducing effect of DCI diminishes.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{results/figures/mechanism_renewable_curve.png}
-\caption{The non-linear relationship between Renewable Energy Share and DCI effect. As renewable share increases, the carbon-reducing effect of DCI diminishes (moves closer to zero), supporting the hypothesis that digital efficiency saves less carbon in cleaner grids.}
+\caption{Mechanism Analysis: The Renewable Energy Paradox. As renewable share increases, the carbon-reducing effect of DCI diminishes (moves closer to zero), supporting the hypothesis that digital efficiency saves less carbon in cleaner grids.}
 \label{fig:mechanism}
 \end{figure}
+
 
 %==============================================================================
 \section{Sensitivity Analysis Results}
@@ -534,7 +453,7 @@ Renewable energy \% & $+0.56$ & Higher renewables $\to$ weaker reduction \\
 
 \subsection{Bootstrap Convergence Diagnostics}
 
-We assess the stability of our inference by varying the number of bootstrap iterations. Table \ref{tab:bootstrap_conv} reports ATE estimates and confidence interval widths across $B = 100, 200, 500, 1000$.
+We assess the stability of our inference by varying the number of bootstrap iterations. Table~\ref{tab:bootstrap_conv} reports ATE estimates and confidence interval widths across $B = 100, 200, 500, 1000$.
 
 \begin{table}[H]
 \centering
@@ -552,11 +471,11 @@ $B = 1000$ & $-1.332$ & 0.125 & $-1.557$ & $-1.092$ \\
 \end{tabular}
 \end{table}
 
-ATE point estimates remain close across bootstrap iterations, but confidence-interval behavior indicates that uncertainty does not shrink monotonically with additional bootstrap draws.
+ATE point estimates remain stable across bootstrap iterations (ranging from $-1.337$ to $-1.332$), demonstrating that the point estimate has converged. However, the confidence interval widens slightly as $B$ increases (from a width of 0.395 at $B = 100$ to 0.465 at $B = 1000$), indicating that lower bootstrap counts may understate uncertainty. At $B = 1000$, the intervals appear stable, supporting our choice of this specification for the main results.
 
 \subsection{Sample Size Sensitivity}
 
-We assess result stability by subsampling countries at 60\%, 70\%, 80\%, 90\%, and 100\% of the full sample.
+We assess result stability by subsampling countries at 60\%, 70\%, 80\%, 90\%, and 100\% of the full sample. Table~\ref{tab:sample_sens} reports the results.
 
 \begin{table}[H]
 \centering
@@ -575,11 +494,11 @@ Sample Fraction & Countries & Observations & ATE Mean & ATE Std & \% Significant
 \end{tabular}
 \end{table}
 
-Effects remain directionally similar across subsamples, but magnitudes and significance rates vary notably. The 70\% subsample shows the highest significance rate, likely reflecting composition effects rather than a uniform precision gain.
+Effects remain directionally consistent across all subsamples---the ATE is negative in every specification. However, magnitudes and significance rates vary notably: the 70\% subsample yields the highest significance rate (81.6\%), likely reflecting composition effects rather than a uniform precision gain. These results underscore the importance of interpreting the specific point estimates with caution while taking confidence in the directional finding.
 
 \subsection{Dynamic Effects Analysis}
 
-We examine whether DCI effects persist over time by estimating effects at leads 0 through 3.
+We examine whether DCI effects persist over time by estimating effects at leads zero through three. Table~\ref{tab:dynamic} reports the results.
 
 \begin{table}[H]
 \centering
@@ -597,11 +516,11 @@ $t+3$ & 720 & $-1.598$ & $-2.772$ & $-0.425$ & Yes \\
 \end{tabular}
 \end{table}
 
-Effects persist over 2--3 years, with cumulative impacts reaching $-6.39$ tons/capita by $t+3$. This suggests digital infrastructure investments deliver sustained rather than transitory climate benefits.
+The effects persist over two to three years, with cumulative impacts reaching $-6.39$ tons per capita by $t+3$. This finding suggests that digital infrastructure investments deliver sustained rather than transitory climate benefits. The persistence is consistent with the hypothesis that DCI represents structural capacity change rather than a one-time adjustment.
 
 \subsection{Mediation Analysis}
 
-We test whether energy efficiency mediates the relationship between DCI and emissions.
+We test whether energy efficiency mediates the relationship between DCI and emissions. Table~\ref{tab:mediation} reports the results.
 
 \begin{table}[H]
 \centering
@@ -618,7 +537,8 @@ Innovation & $+0.245$ & $<0.001$ & $-8.3\%$ \\
 \end{tabular}
 \end{table}
 
-Energy efficiency mediates 11.7\% of DCI's effect on emissions (Sobel test $p < 0.001$), suggesting DCI enables more efficient energy use, which in turn reduces carbon emissions. The negative mediation proportions for structural change and innovation suggest these mechanisms operate through different pathways.
+Energy efficiency mediates 11.7\% of DCI's total effect on emissions (Sobel test $p < 0.001$), suggesting that one pathway through which DCI reduces carbon output is by enabling more efficient energy use. The negative mediation proportions for structural change and innovation indicate that these mechanisms operate through different, possibly offsetting, pathways: structural change toward services may reduce emissions through composition effects, but the indirect channel captured here also reflects countervailing forces such as increased economic activity.
+
 
 %==============================================================================
 \section{Discussion}
@@ -626,128 +546,84 @@ Energy efficiency mediates 11.7\% of DCI's effect on emissions (Sobel test $p < 
 
 \subsection{The Digital Decarbonization Divide}
 
-Our results reveal a fundamental heterogeneity depending on socio-economic capacity. The ``Digital Decarbonization Divide'' manifests along three dimensions:
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Development Divide (with Exceptions):} Wealthier nations generally benefit more from domestic digital capacity, yet a subset (e.g., FIN, SWE, CHE, CAN) exhibits notably weaker reductions.
-    \item \textbf{EDS Alignment:} Higher EDS correlates with weaker reductions, suggesting export structure can dampen domestic efficiency gains without reversing them.
-    \item \textbf{Energy Structure Divide:} Counterintuitively, countries with \textit{lower} renewable energy shares see stronger DCI-driven reductions. This supports a ``marginal abatement cost'' logic: digital optimization yields higher carbon returns where the baseline energy mix is dirtier.
-\end{enumerate}
+Our results reveal a fundamental heterogeneity in digitalization's climate impact that depends on socio-economic capacity. This ``Digital Decarbonization Divide'' manifests along three dimensions. The first is a \textbf{development divide with notable exceptions}: wealthier nations generally benefit more from domestic digital capacity, yet a subset of high-income countries---Finland, Sweden, Switzerland, and Canada---exhibits notably weaker reductions, driven by their high EDS and already-clean energy systems. The second dimension is \textbf{EDS alignment}: higher external digital specialization correlates with weaker emission reductions, suggesting that export structure can dampen domestic efficiency gains without fully reversing them. The third dimension is an \textbf{energy structure divide}: counterintuitively, countries with \textit{lower} renewable energy shares see stronger DCI-driven reductions. This supports a ``marginal abatement cost'' logic, whereby digital optimization yields higher carbon returns where the baseline energy mix is dirtier and thus where efficiency improvements translate into larger absolute emission reductions.
 
 \subsection{Mechanism Interpretation}
 
-We propose two non-mutually exclusive mechanisms:
+We propose two non-mutually exclusive mechanisms to explain the observed patterns. Under the \textbf{enabling conditions hypothesis}, strong institutions enable effective environmental regulation, ensuring that efficiency gains from ICT translate to emission reductions rather than rebound effects. Our mediation analysis supports this interpretation: 11.7\% of DCI's effect on emissions operates through improved energy efficiency (Sobel test $p < 0.001$). Under the \textbf{structural transformation hypothesis}, ICT development in wealthier economies represents a shift toward service-based, knowledge-intensive production that is inherently less carbon-intensive. The positive correlation between CATE and renewable energy share ($r = +0.56$) supports a policy complementarity interpretation: digital capacity and clean energy infrastructure function as partial substitutes in emission reduction, so that the marginal contribution of one is smaller when the other is already well-developed.
 
-\paragraph{Enabling Conditions Hypothesis} Strong institutions enable effective environmental regulation, ensuring that efficiency gains from ICT translate to emission reductions rather than rebound effects. Our mediation analysis supports this: \textbf{11.7\% of DCI's effect on emissions operates through improved energy efficiency} (Sobel test $p < 0.001$).
-
-\paragraph{Structural Transformation Hypothesis} ICT development in wealthy economies represents a shift toward service-based, knowledge-intensive production that is inherently less carbon-intensive. The positive correlation between CATE and renewable energy share ($r = +0.56$) supports a \textbf{policy complementarity} interpretation: digital capacity and clean energy infrastructure are substitutes in emission reduction.
-
-\paragraph{Triple Interaction: Institutional Quality $\times$ Renewable Energy} Our triple interaction analysis reveals that institutional moderation itself depends on renewable energy share ($p < 0.001$). In countries with high renewable shares, institutional quality matters less because the energy system is already clean. Conversely, in fossil fuel-dependent countries, strong institutions are critical for ensuring digital efficiency gains translate to emission reductions.
+Our triple interaction analysis further reveals that institutional moderation itself depends on renewable energy share ($p < 0.001$). In countries with high renewable shares, institutional quality matters less because the energy system is already clean. Conversely, in fossil fuel-dependent countries, strong institutions are critical for ensuring that digital efficiency gains translate into actual emission reductions.
 
 \subsection{Policy Implications}
 
-\subsubsection{For Developed Economies}
+For developed economies, the aggregate trend suggests that DCI can serve as a decarbonization lever. However, the high-EDS structural exceptions indicate that efficiency gains may be weaker in service-export-intensive contexts. Policy in these settings should complement digital investment with measures targeting \textit{absolute} decoupling---reducing total emissions---rather than merely improving relative efficiency. Carbon pricing, binding emission caps, and energy system transformation remain essential complements to digitalization.
 
-\begin{quote}
-The aggregate trend suggests \dci{} can serve as a decarbonization lever. However, \textbf{high-EDS structural exceptions} indicate that efficiency gains may be weaker in service-export-intensive contexts. Policy should complement digital investment with measures targeting \textbf{absolute decoupling} rather than relative efficiency gains.
-\end{quote}
+For developing economies, digital transformation alone cannot drive decarbonization in low-capacity settings. Complementary investments in institutional capacity, grid infrastructure, and human capital are essential prerequisites. The ``sweet spot'' finding suggests that international development assistance should target middle-income countries where digital capacity can leverage existing institutional foundations to deliver the largest climate returns.
 
-\subsubsection{For Developing Economies}
-
-\begin{quote}
-\textbf{Policy Priority:} Digital transformation alone cannot drive decarbonization in low-capacity settings. Complementary investments in institutional capacity, grid infrastructure, and human capital are essential prerequisites. The ``sweet spot'' finding suggests targeting middle-income countries where digital capacity can leverage existing institutional foundations.
-\end{quote}
-
-\subsubsection{For International Organizations}
-
-\begin{quote}
-Target digital development assistance as part of broader \textbf{capacity-building} packages. Prioritize countries in the middle-income ``sweet spot'' with strong institutional quality, where each dollar of digital investment yields the highest carbon returns. Consider the Digital-EKC framework when designing country-specific intervention strategies.
-\end{quote}
+For international organizations, these findings imply that digital development assistance should be embedded within broader capacity-building packages rather than deployed in isolation. Prioritizing countries in the middle-income sweet spot with strong institutional quality maximizes the carbon return per dollar of digital investment. The Digital-EKC framework developed here can inform country-specific intervention strategies.
 
 \subsection{Limitations}
 
-We acknowledge several limitations:
+Several limitations warrant acknowledgment. First, our analysis uses 40 countries (840 country-year observations). While these economies account for approximately 90\% of global GDP and emissions, 40 represents a relatively small number of independent clusters for Causal Forest estimation \citep{Cameron2008}. Readers should interpret results as suggestive evidence rather than definitive findings; we report Anderson-Rubin weak-IV robust confidence intervals to partially address this concern.
 
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Sample Size:} Our analysis uses 40 countries (840 country-year observations). While covering 90\% of global GDP and emissions, this represents a relatively small number of independent clusters for Causal Forest estimation \citep{Cameron2008}. Readers should interpret results as \textit{suggestive evidence} rather than definitive findings. We report Anderson-Rubin weak-IV robust confidence intervals to address this concern.
+Second, while DCI captures infrastructure-based domestic digital capacity, it may not fully reflect the quality of digital utilization, such as AI adoption intensity or data-center energy efficiency. Our PCA diagnostics show that the first principal component explains approximately 70\% of variance, leaving meaningful variation uncaptured.
 
-    \item \textbf{Measurement:} While DCI captures infrastructure-based domestic digital capacity, it may not fully capture \textbf{quality of digital utilization} (e.g., AI adoption intensity, data-center efficiency). Our PCA diagnostics show the first principal component explains approximately 70\% of variance.
+Third, despite the DML framework and IV strategy, unobserved confounders may remain. The exclusion restriction for our lagged-DCI instrument is theoretically motivated but cannot be empirically verified.
 
-    \item \textbf{Causal Interpretation:} Despite the DML framework and IV strategy, unobserved confounders may remain. The exclusion restriction for our lagged-DCI instrument is theoretically motivated but cannot be empirically verified.
+Fourth, our primary analysis focuses on contemporaneous effects. Although the dynamic analysis suggests effects persist over two to three years, a more comprehensive study of long-run dynamics---including potential long-run rebound effects---would strengthen the findings.
 
-    \item \textbf{Dynamic Effects:} Our primary analysis focuses on contemporaneous effects. Although dynamic analysis suggests effects persist over 2--3 years, a more comprehensive study of long-run dynamics would strengthen the findings.
+Fifth, the sample is restricted to major economies, and findings may not generalize to smaller economies, island states, or least-developed countries not included in our sample. Extension to these settings is an important avenue for future research.
 
-    \item \textbf{External Validity:} Findings may not generalize to smaller economies, island states, or least-developed countries not included in our sample.
-\end{enumerate}
 
 %==============================================================================
 \section{Conclusion}
 %==============================================================================
 
-This paper introduces the concept of the ``Digital Decarbonization Divide'' and provides rigorous empirical evidence for its existence. Using Causal Forest DML on a panel of 40 economies ($N=840$), we find that:
+This paper introduces the concept of the ``Digital Decarbonization Divide'' and provides rigorous empirical evidence for its existence. Using Causal Forest DML on a panel of 40 economies ($N = 840$), we establish four principal findings.
 
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Domestic digital capacity (DCI)} exhibits fundamentally non-linear effects on CO$_2$ emissions.
-    \item \textbf{GATEs} reveal a clear progression from moderate effects in low-capacity economies to strong reductions in middle-income economies (the ``sweet spot''), followed by diminishing returns in high-income economies.
-    \item \textbf{Structural exceptions exist:} ``off-diagonal'' cases indicate that \textbf{high external digital specialization (EDS)} can dampen domestic efficiency gains.
-    \item The \textbf{Model Ladder} demonstrates that flexible estimation is required to capture policy-relevant thresholds and exceptions missed by linear models.
-\end{enumerate}
+First, domestic digital capacity (DCI) exhibits fundamentally non-linear effects on CO$_2$ emissions, with the relationship between digitalization and decarbonization varying sharply across the income distribution. Second, Group Average Treatment Effects reveal a clear progression from moderate effects in low-capacity economies ($-1.19$ tons per capita) to strong reductions in middle-income economies ($-2.17$ to $-2.29$ tons per capita, constituting the ``sweet spot''), followed by diminishing returns in high-income economies ($-1.26$ tons per capita). Third, structural exceptions exist: ``off-diagonal'' cases demonstrate that high external digital specialization can dampen domestic efficiency gains, explaining why some wealthy, digitally advanced economies show surprisingly weak emission reductions. Fourth, the Model Ladder comparison demonstrates that flexible estimation is required to capture these policy-relevant thresholds and exceptions, which linear models systematically smooth over.
 
-Our findings challenge the assumption that digital transformation is universally beneficial for climate goals. Instead, we identify \textbf{conditional prerequisites}---socio-economic capacity and institutional quality---that moderate whether ICT delivers a ``green dividend.'' For policymakers, the message is clear: digital development assistance should prioritize middle-income countries with strong institutional capacity, where each dollar of digital investment yields the highest carbon returns.
+Our findings challenge the assumption that digital transformation is universally beneficial for climate goals. Instead, we identify conditional prerequisites---socio-economic capacity and institutional quality---that moderate whether ICT delivers a ``green dividend.'' For policymakers, the message is clear: digital development assistance should prioritize middle-income countries with strong institutional capacity, where each dollar of digital investment yields the highest carbon returns.
+
 
 %==============================================================================
 \section*{Policy Toolkit Appendix}
 %==============================================================================
 
-\subsection{Decision Framework for Policymakers}
+\subsection*{Decision Framework for Policymakers}
 
-Based on our findings, we propose a decision framework for digital-climate policy:
+Based on our findings, we propose a decision framework for digital-climate policy, summarized in Table~\ref{tab:policy_recs}.
 
 \begin{table}[H]
 \centering
 \caption{Policy Recommendations by Country Type}
+\label{tab:policy_recs}
 \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
 \toprule
 Country Type & Expected DCI Impact & Recommended Policy Mix \\
 \midrule
 Low Income & Moderate ($-1.19$) & Build complementary capacity (institutions, grid) before major digital push \\
-Lower-Middle Income & \textbf{Strong} ($-2.17$) & \textbf{Prioritize digital infrastructure}---highest carbon returns \\
-Upper-Middle Income & \textbf{Strong} ($-2.29$) & \textbf{Prioritize digital infrastructure}---highest carbon returns \\
+Lower-Middle Income & Strong ($-2.17$) & Prioritize digital infrastructure---highest carbon returns \\
+Upper-Middle Income & Strong ($-2.29$) & Prioritize digital infrastructure---highest carbon returns \\
 High Income (Low EDS) & Moderate ($-1.26$) & Focus on absolute decoupling, not just efficiency \\
 High Income (High EDS) & Weak ($-0.19$ to $-0.52$) & Address structural constraints; complement with trade policy \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\subsection{Implementation Checklist}
+\subsection*{Implementation Guidance}
 
-For practitioners implementing digital-climate policies:
+For practitioners implementing digital-climate policies, we recommend a five-step process. The first step is to assess current capacity by measuring existing DCI using the PCA framework (internet users, broadband subscriptions, secure servers). The second step is to evaluate institutional quality using WGI indicators to determine whether enabling conditions for effective digital-climate policy are in place. The third step is to identify complementarities by mapping renewable energy share and energy efficiency potential, which together determine the marginal abatement value of digital investment. The fourth step is to target the sweet spot by prioritizing digital investments in middle-income countries with strong institutions, where our estimates suggest the highest carbon returns. The fifth and final step is to monitor for rebound effects by tracking whether efficiency gains translate into absolute emission reductions rather than being offset by increased consumption.
 
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Assess Current Capacity:} Measure existing DCI using the PCA framework (Internet, Broadband, Secure Servers).
-    \item \textbf{Evaluate Institutional Quality:} Use WGI indicators to assess enabling conditions.
-    \item \textbf{Identify Complementarities:} Map renewable energy share and energy efficiency potential.
-    \item \textbf{Target the Sweet Spot:} Prioritize digital investments in middle-income countries with strong institutions.
-    \item \textbf{Monitor for Rebound Effects:} Track whether efficiency gains translate to absolute emission reductions.
-\end{enumerate}
 
 %==============================================================================
 \section*{Online Supplementary Materials}
 %==============================================================================
 
-Additional materials are available in the online supplementary appendix:
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Appendix A:} Detailed variable definitions and data sources
-    \item \textbf{Appendix B:} Complete PCA diagnostics and component loadings
-    \item \textbf{Appendix C:} Full Model Ladder results with all specifications
-    \item \textbf{Appendix D:} Country-level CATE estimates with confidence intervals
-    \item \textbf{Appendix E:} Additional robustness checks (alternative instruments, placebo tests)
-    \item \textbf{Appendix F:} Power analysis and Monte Carlo simulation details
-    \item \textbf{Appendix G:} Replication code and data construction scripts
-\end{enumerate}
+Additional materials are available in the online supplementary appendix. Appendix~A provides detailed variable definitions and data sources. Appendix~B reports complete PCA diagnostics and component loadings. Appendix~C presents full Model Ladder results with all specifications. Appendix~D contains country-level CATE estimates with confidence intervals. Appendix~E includes additional robustness checks (alternative instruments, placebo tests). Appendix~F details the power analysis and Monte Carlo simulation. Appendix~G provides replication code and data construction scripts.
 
 The replication package, including code and data construction scripts, is available at: \url{https://github.com/a985783/digital-decarbonization-divide.git}
+
 
 %==============================================================================
 \section*{Declarations}
@@ -758,6 +634,7 @@ The replication package, including code and data construction scripts, is availa
 \textbf{Conflicts of Interest}: The author declares no conflicts of interest.
 
 \textbf{Data Availability}: All raw inputs are obtained from World Bank WDI/WGI databases. Processed data and replication code are available in the online supplementary materials.
+
 
 %==============================================================================
 \bibliographystyle{apalike}
